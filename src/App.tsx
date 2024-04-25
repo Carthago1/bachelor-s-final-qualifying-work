@@ -1,12 +1,14 @@
 import React from 'react';
+import { Provider } from 'react-redux';
+import store from '@/store/store';
 import './App.css';
-import LoginFormView from '@/views/LoginFormView';
-import localStorageService from '@/services/localStorageService';
+import MainView from './views/MainView';
 
 function App() {
-
   return (
-    <LoginFormView />
+    <Provider store={store}>
+      <MainView />
+    </Provider>
   );
 }
 
