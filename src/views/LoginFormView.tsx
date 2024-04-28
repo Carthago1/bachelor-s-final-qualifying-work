@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import type { FormProps } from 'antd';
 import { Flex, Button, Checkbox, Form, Input, Spin } from 'antd';
+import httpService from '@/services/httpService';
+import localStorageService from '@/services/localStorageService';
 
 type FieldType = {
     email?: string;
@@ -8,19 +10,19 @@ type FieldType = {
     remember?: string;
 };
   
-const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-};
-
 const App: React.FC = () => {
     const [loading, setLoading] = useState(false);
 
-    function onFinish(values: FieldType) {
+    async function onFinish(values: FieldType) {
         setLoading(true);
-        setTimeout(() => {
-            console.log('Success:', values);
-            setLoading(false);
-        }, 1000);
+        const body = {
+            email: values.email,
+            password: values.password
+        }
+        const result = await httpService.post<any>('/login', body);
+        localStorageService.set('Authorization', result.token);
+
+        setLoading(false);
     }
 
     return (
@@ -33,7 +35,6 @@ const App: React.FC = () => {
                 style={{ maxWidth: 600, width: 400 }}
                 initialValues={{ remember: true }}
                 onFinish={onFinish}
-                onFinishFailed={onFinishFailed}
                 autoComplete="off"
             >
                 <Form.Item<FieldType>
@@ -66,7 +67,7 @@ const App: React.FC = () => {
                 </Button>
                 </Form.Item>
             </Form>
-            </Flex>
+        </Flex>
     );
 }
 
