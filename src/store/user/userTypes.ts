@@ -5,11 +5,12 @@ export interface User {
     patronymic: string;
     email: string;
     isStudent?: boolean;
+    groupID?: number;
     isProfessor?: boolean;
     isAdmin?: boolean;
-    groupID?: number;
 }
 
 export interface UserState {
     user: User | null;
+    authorized: boolean;
 }

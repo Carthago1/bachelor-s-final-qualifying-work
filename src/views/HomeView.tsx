@@ -1,7 +1,8 @@
 import React from 'react';
+import AppLayout from './Layout/AppLayout';
 
 export default function HomeView() {
     return (
-        <h1>Home Page</h1>
+        <AppLayout />
     )
 }

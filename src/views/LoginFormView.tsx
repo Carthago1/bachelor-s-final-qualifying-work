@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
-import type { FormProps } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { Flex, Button, Checkbox, Form, Input, Spin } from 'antd';
 import httpService from '@/services/httpService';
 import localStorageService from '@/services/localStorageService';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
+import { useNavigate } from 'react-router-dom';
 
 type FieldType = {
     email?: string;
@@ -11,7 +13,15 @@ type FieldType = {
 };
   
 const App: React.FC = () => {
+    const { authorized } = useSelector((state: RootState) => state.user);
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (authorized) {
+            navigate('/');
+        }
+    })
 
     async function onFinish(values: FieldType) {
         setLoading(true);
@@ -20,6 +30,7 @@ const App: React.FC = () => {
             password: values.password
         }
         const result = await httpService.post<any>('/login', body);
+        
         localStorageService.set('Authorization', result.token);
 
         setLoading(false);
