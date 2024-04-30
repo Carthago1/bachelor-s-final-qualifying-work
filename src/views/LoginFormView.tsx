@@ -9,7 +9,6 @@ import { useNavigate } from 'react-router-dom';
 type FieldType = {
     email?: string;
     password?: string;
-    remember?: string;
 };
   
 const App: React.FC = () => {
@@ -37,7 +36,7 @@ const App: React.FC = () => {
     }
 
     return (
-        <Flex justify={'center'} align={'center'} style={{height: '100vh'}}>
+        <Flex justify={'center'} align={'center'} style={{height: '100vh'}} vertical>
             {loading && <Spin fullscreen/>}
             <Form
                 name="basic"
@@ -53,31 +52,26 @@ const App: React.FC = () => {
                 name="email"
                 rules={[{ required: true, message: 'Please input your email!' }]}
                 >
-                <Input />
+                    <Input />
                 </Form.Item>
 
                 <Form.Item<FieldType>
-                label="Password"
+                label="Пароль"
                 name="password"
                 rules={[{ required: true, message: 'Please input your password!' }]}
                 >
-                <Input.Password />
-                </Form.Item>
-
-                <Form.Item<FieldType>
-                name="remember"
-                valuePropName="checked"
-                wrapperCol={{ offset: 8, span: 16 }}
-                >
-                <Checkbox>Remember me</Checkbox>
+                    <Input.Password />
                 </Form.Item>
 
                 <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                <Button type="primary" htmlType="submit">
-                    Submit
-                </Button>
+                    <Button type="primary" htmlType="submit">
+                        Войти
+                    </Button>
                 </Form.Item>
             </Form>
+            <Button type="primary" onClick={() => navigate('/registration')} style={{marginLeft: 20}} >
+                Зарегистироваться
+            </Button>
         </Flex>
     );
 }

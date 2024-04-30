@@ -1,7 +1,16 @@
 import React from 'react';
+import { Button, Result } from 'antd';
+import { useNavigate } from 'react-router-dom';
 
 export default function NotFoundView() {
+    const navigate = useNavigate();
+
     return (
-        <h1>Страница не найдена</h1>
+        <Result 
+            status='404'
+            title='404'
+            subTitle='Страница не существует'
+            extra={<Button type='primary' onClick={() => navigate('/')}>На главную</Button>}
+        />
     )
 }

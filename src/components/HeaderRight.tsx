@@ -6,15 +6,17 @@ import { Button, Dropdown } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import getInitialsFullName from '@/utils/getInitialsFullName';
 import localStorageService from '@/services/localStorageService';
-
+import { useDispatch } from 'react-redux';
+import { clearUser } from '@/store/user/userSlice';
 
 export default function HeaderRight() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     function logout() {
         localStorageService.remove('Authorization');
+        dispatch(clearUser());
         navigate('/login', {replace: true});
-        
     }
 
     const { user } = useSelector((state: RootState) => state.user);

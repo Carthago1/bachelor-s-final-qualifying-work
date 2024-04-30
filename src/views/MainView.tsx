@@ -11,6 +11,7 @@ import LoginFormView from './LoginFormView';
 import ProfileView from './ProfileView';
 import HomeView from './HomeView';
 import NotFoundView from './NotFoundView';
+import RegistrationView from './RegistrationView';
 
 function MainView() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -63,11 +64,11 @@ function MainView() {
 
     return (
         <Router>
-            {!isLoggedIn && <Navigate to="/login" />}
             <Routes>
                 <Route path='/login' element={<LoginFormView />} />
                 <Route path='/' element={<HomeView />} />
                 <Route path='/profile' element={<ProfileView />} />
+                <Route path='/regestration' element={<RegistrationView />} />
                 <Route path='*' element={<NotFoundView />} />
             </Routes>
         </Router>
