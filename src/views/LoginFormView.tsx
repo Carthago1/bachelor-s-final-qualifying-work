@@ -31,6 +31,7 @@ const App: React.FC = () => {
         const result = await httpService.post<any>('/login', body);
         
         localStorageService.set('Authorization', result.token);
+        // store
 
         setLoading(false);
     }

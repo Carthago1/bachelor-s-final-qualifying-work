@@ -12,6 +12,7 @@ import ProfileView from './ProfileView';
 import HomeView from './HomeView';
 import NotFoundView from './NotFoundView';
 import RegistrationView from './RegistrationView';
+import VideoView from './VideoView';
 
 function MainView() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -69,6 +70,7 @@ function MainView() {
                 <Route path='/' element={<HomeView />} />
                 <Route path='/profile' element={<ProfileView />} />
                 <Route path='/regestration' element={<RegistrationView />} />
+                <Route path='/video/:videoId' element={<VideoView />} />
                 <Route path='*' element={<NotFoundView />} />
             </Routes>
         </Router>
