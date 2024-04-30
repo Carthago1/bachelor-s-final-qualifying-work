@@ -21,7 +21,6 @@ class HttpService {
 
     async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
         const response: AxiosResponse<T> = await this.axiosInstance.get(url, config);
-        console.log(response);
         return response.data;
     }
 

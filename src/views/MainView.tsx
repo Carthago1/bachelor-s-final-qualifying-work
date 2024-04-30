@@ -5,6 +5,7 @@ import { setDiscipline } from '@/store/discipline/disciplineSlice';
 import { Spin } from 'antd';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import localStorageService from '@/services/localStorageService';
+import httpService from '@/services/httpService';
 
 import LoginFormView from './LoginFormView';
 import ProfileView from './ProfileView';
@@ -17,15 +18,21 @@ function MainView() {
     const dispatch = useDispatch();
 
     useEffect(() => {
+        // const fetchUser = async () => {
+        //     const data = await httpService.get<any>('whoami/');
+        //     console.log(data);
+        // }
         const token = localStorageService.get('Authorization');
         if (token) {
             // ЗАПРОС
+            // fetchUser();
             dispatch(setUser({
                 id: 1,
                 name: 'Дмитрий',
                 surname: 'Верин',
                 patronymic: 'Сергеевич',
-                email: 'dima.verin.2002@mail.ru'
+                email: 'dima.verin.2002@mail.ru',
+                isStudent: true,
             }));
             // ЗАПРОС
             dispatch(setDiscipline([
