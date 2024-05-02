@@ -69,7 +69,7 @@ function MainView() {
                 <Route path='/login' element={<LoginFormView />} />
                 <Route path='/' element={<HomeView />} />
                 <Route path='/profile' element={<ProfileView />} />
-                <Route path='/regestration' element={<RegistrationView />} />
+                <Route path='/registration' element={<RegistrationView />} />
                 <Route path='/video/:videoId' element={<VideoView />} />
                 <Route path='*' element={<NotFoundView />} />
             </Routes>
