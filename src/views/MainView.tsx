@@ -35,6 +35,7 @@ function MainView() {
                 patronymic: 'Сергеевич',
                 email: 'dima.verin.2002@mail.ru',
                 isStudent: true,
+                isProfessor: true,
             }));
             // ЗАПРОС
             dispatch(setDiscipline([

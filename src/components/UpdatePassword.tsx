@@ -1,7 +1,7 @@
 import React, { useState, Dispatch, SetStateAction } from 'react';
 import { Modal, Form, Input } from 'antd';
 
-interface IPasswordProps {
+interface IUpdatePasswordProps {
     open: boolean,
     setOpen: Dispatch<SetStateAction<boolean>>
 }
@@ -12,7 +12,7 @@ type FieldType = {
     repeatedNewPassword?: string;
 };
 
-export default function UpdatePassword({open, setOpen} : IPasswordProps) {
+export default function UpdatePassword({open, setOpen} : IUpdatePasswordProps) {
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [password, setPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
