@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Flex, Button, Checkbox, Form, Input, Spin } from 'antd';
+import { Flex, Button, Form, Input, Spin } from 'antd';
 import httpService from '@/services/httpService';
 import localStorageService from '@/services/localStorageService';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { setUser } from '@/store/user/userSlice';
 import { RootState } from '@/store/store';
 import { useNavigate } from 'react-router-dom';
 
@@ -15,6 +16,7 @@ const App: React.FC = () => {
     const { authorized } = useSelector((state: RootState) => state.user);
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         if (authorized) {
@@ -24,14 +26,31 @@ const App: React.FC = () => {
 
     async function onFinish(values: FieldType) {
         setLoading(true);
-        const body = {
-            email: values.email,
-            password: values.password
+        try {
+            const body = {
+                email: values.email,
+                password: values.password
+            }
+            const result = await httpService.post<any>('token/', body);
+
+            localStorageService.set('Authorization', result.access);
+            
+            const { data } = await httpService.get<any>('whoami/');
+            console.log(data);
+            dispatch(setUser({
+                name: data.first_name,
+                surname: data.last_name,
+                patronymic: data.patronymic,
+                email: data.email,
+                isAdmin: data.is_admin,
+                isStudent: data.is_student,
+                isProfessor: data.isTeacher, 
+            }));
+
+            navigate('/');
+        } catch (e) {
+            console.log(e);
         }
-        const result = await httpService.post<any>('/login', body);
-        
-        localStorageService.set('Authorization', result.token);
-        // store
 
         setLoading(false);
     }

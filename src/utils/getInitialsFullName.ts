@@ -1,3 +1,3 @@
 export default function getInitialsFullName(name: string, surname: string, patronymic: string): string {
-    return `${surname} ${name[0]}.${patronymic[0]}.`;
+    return `${surname} ${name?.at(0)}.${patronymic?.at(0)}.`;
 }

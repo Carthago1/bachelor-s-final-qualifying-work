@@ -26,7 +26,6 @@ class HttpService {
 
     async post<T>(url: string, body: any, config?: AxiosRequestConfig): Promise<T> {
         const response: AxiosResponse<T> = await this.axiosInstance.post(url, body, config);
-        console.log(response);
         return response.data;
     }
 }

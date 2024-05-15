@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store/store';
 import { Flex, Form, Spin, Input, Button } from 'antd';
+import httpService from '@/services/httpService';
+import { setUser } from '@/store/user/userSlice';
 
 type FieldType = {
     name?: string;
@@ -17,6 +19,7 @@ export default function RegistrationView() {
     const navigate = useNavigate();
     const { authorized } = useSelector((state: RootState) => state.user);
     const [loading, setLoading] = useState(false);
+    const dispatch = useDispatch();
     
     useEffect(() => {
         if (authorized) {
@@ -25,9 +28,39 @@ export default function RegistrationView() {
     })
 
     async function onFinish(values: FieldType) {
+        if (values.password !== values.repeatedPassword) {
+            // Обработка несовпадения паролей
+            return;
+        }
+
         setLoading(true);
-        console.log(values);
-        // ЗАПРОС
+        
+        try {
+            const body = {
+                first_name: values.name,
+                last_name: values.surname,
+                patronymic: values.patronomyc,
+                email: values.email,
+                password: values.password,
+            }
+
+            const result = await httpService.post<any>('users/', body);
+            
+            dispatch(setUser({
+                name: result.first_name,
+                surname: result.last_name,
+                patronymic: result.patronymic,
+                email: result.email,
+                isAdmin: result.is_admin,
+                isStudent: result.is_student,
+                isProfessor: result.isTeacher, 
+            }));
+
+            navigate('/');
+        } catch(e) {
+            console.log(e);
+        }
+
         setLoading(false);
     }
     
@@ -38,7 +71,7 @@ export default function RegistrationView() {
                 name="basic"
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 16 }}
-                style={{ maxWidth: 600, width: 400 }}
+                style={{ maxWidth: 600, width: 420 }}
                 initialValues={{ remember: true }}
                 onFinish={onFinish}
                 autoComplete="off"
@@ -97,6 +130,9 @@ export default function RegistrationView() {
                     </Button>
                 </Form.Item>
             </Form>
+            <Button type="primary" onClick={() => navigate('/login')} style={{marginLeft: 20}}>
+                Войти
+            </Button>
         </Flex>
     )
 }
