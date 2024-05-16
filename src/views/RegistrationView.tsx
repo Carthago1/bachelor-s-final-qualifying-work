@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store/store';
-import { Flex, Form, Spin, Input, Button } from 'antd';
+import { Flex, Form, Spin, Input, Button, message } from 'antd';
 import httpService from '@/services/httpService';
 import { setUser } from '@/store/user/userSlice';
+import localStorageService from '@/services/localStorageService';
 
 type FieldType = {
     name?: string;
@@ -20,6 +21,7 @@ export default function RegistrationView() {
     const { authorized } = useSelector((state: RootState) => state.user);
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
+    const [messageApi, contextHolder] = message.useMessage();
     
     useEffect(() => {
         if (authorized) {
@@ -29,7 +31,11 @@ export default function RegistrationView() {
 
     async function onFinish(values: FieldType) {
         if (values.password !== values.repeatedPassword) {
-            // Обработка несовпадения паролей
+            messageApi.open({
+                type: 'error',
+                content: 'Введенные пароли не совпадают',
+            });
+
             return;
         }
 
@@ -44,16 +50,23 @@ export default function RegistrationView() {
                 password: values.password,
             }
 
-            const result = await httpService.post<any>('users/', body);
+            await httpService.post<any>('users/', body);
             
+            const result = await httpService.post<any>('token/', body);
+
+            localStorageService.set('Authorization', result.access);
+            
+            const { data } = await httpService.get<any>('whoami/');
+
             dispatch(setUser({
-                name: result.first_name,
-                surname: result.last_name,
-                patronymic: result.patronymic,
-                email: result.email,
-                isAdmin: result.is_admin,
-                isStudent: result.is_student,
-                isProfessor: result.isTeacher, 
+                id: data.id,
+                name: data.first_name,
+                surname: data.last_name,
+                patronymic: data.patronymic,
+                email: data.email,
+                isAdmin: data.is_admin,
+                isStudent: data.is_student,
+                isProfessor: data.is_teacher, 
             }));
 
             navigate('/');
@@ -67,6 +80,7 @@ export default function RegistrationView() {
     return (
         <Flex justify={'center'} align={'center'} style={{height: '100vh'}} vertical>
             {loading && <Spin fullscreen/>}
+            {contextHolder}
             <Form
                 name="basic"
                 labelCol={{ span: 8 }}
@@ -129,10 +143,13 @@ export default function RegistrationView() {
                         Зарегистрироваться
                     </Button>
                 </Form.Item>
+
+                <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                    <Button type="primary" onClick={() => navigate('/login')}>
+                        Войти
+                    </Button>
+                </Form.Item>
             </Form>
-            <Button type="primary" onClick={() => navigate('/login')} style={{marginLeft: 20}}>
-                Войти
-            </Button>
         </Flex>
     )
 }

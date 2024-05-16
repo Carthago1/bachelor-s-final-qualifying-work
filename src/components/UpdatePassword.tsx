@@ -1,9 +1,11 @@
 import React, { useState, Dispatch, SetStateAction } from 'react';
-import { Modal, Form, Input } from 'antd';
+import { Modal, Form, Input, message } from 'antd';
+import httpSerice from '@/services/httpService';
 
 interface IUpdatePasswordProps {
     open: boolean,
-    setOpen: Dispatch<SetStateAction<boolean>>
+    setOpen: Dispatch<SetStateAction<boolean>>,
+    userId: number | undefined,
 }
 
 type FieldType = {
@@ -12,19 +14,45 @@ type FieldType = {
     repeatedNewPassword?: string;
 };
 
-export default function UpdatePassword({open, setOpen} : IUpdatePasswordProps) {
+export default function UpdatePassword({open, setOpen, userId} : IUpdatePasswordProps) {
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [password, setPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [repeatedNewPassword, setRepeatedNewPassword] = useState('');
+    const [messageApi, contextHolder] = message.useMessage();
 
-    function handleOk() {
+    async function handleOk() {
+        if (newPassword !== repeatedNewPassword) {
+            messageApi.open({
+                type: 'error',
+                content: 'Новый пароль и повторный пароль не совпадают',
+            });
+
+            return;
+        }
+
+        if (!userId) {
+            return;
+        }
+
         setConfirmLoading(true);
-        console.log(password, newPassword, repeatedNewPassword);
-        setTimeout(() => {
-            setOpen(false);
-            setConfirmLoading(false);
-        }, 2000);
+
+        try {
+            const response = await httpSerice.put(`users/${userId}/`, {
+                'current_password': password,
+                'new_password': newPassword,
+            });
+
+            messageApi.open({
+                type: 'success',
+                content: 'Пароль успешно обновлен',
+            })
+        } catch (e) {
+            console.log(e);
+        }
+
+        setOpen(false);
+        setConfirmLoading(false);
     }
 
     function handleCancel() {
@@ -32,47 +60,50 @@ export default function UpdatePassword({open, setOpen} : IUpdatePasswordProps) {
     }
     
     return (
-        <Modal
-            title='Обновление пароля'
-            open={open}
-            onOk={handleOk}
-            confirmLoading={confirmLoading}
-            onCancel={handleCancel}
-            width={600}
-        >
-            <Form
-                name="basic"
-                labelCol={{ span: 8 }}
-                wrapperCol={{ span: 16 }}
-                style={{ maxWidth: 600 }}
-                initialValues={{ remember: true }}
-                autoComplete="off"
+        <>
+            {contextHolder}
+            <Modal
+                title='Обновление пароля'
+                open={open}
+                onOk={handleOk}
+                confirmLoading={confirmLoading}
+                onCancel={handleCancel}
+                width={600}
             >
-                <Form.Item<FieldType>
-                    label="Текущий пароль"
-                    name="password"
-                    rules={[{ required: true, message: 'Please input your current password!' }]}
+                <Form
+                    name="basic"
+                    labelCol={{ span: 8 }}
+                    wrapperCol={{ span: 16 }}
+                    style={{ maxWidth: 600 }}
+                    initialValues={{ remember: true }}
+                    autoComplete="off"
                 >
-                    <Input.Password onChange={event => setPassword(event.target.value)} />
-                </Form.Item>
+                    <Form.Item<FieldType>
+                        label="Текущий пароль"
+                        name="password"
+                        rules={[{ required: true, message: 'Please input your current password!' }]}
+                    >
+                        <Input.Password onChange={event => setPassword(event.target.value)} />
+                    </Form.Item>
 
-                <Form.Item<FieldType>
-                    label="Новый пароль"
-                    name="newPassword"
-                    rules={[{ required: true, message: 'Please input your new password!' }]}
-                >
-                    <Input.Password onChange={event => setNewPassword(event.target.value)} />
-                </Form.Item>
+                    <Form.Item<FieldType>
+                        label="Новый пароль"
+                        name="newPassword"
+                        rules={[{ required: true, message: 'Please input your new password!' }]}
+                    >
+                        <Input.Password onChange={event => setNewPassword(event.target.value)} />
+                    </Form.Item>
 
-                <Form.Item<FieldType>
-                    label="Повторите новый пароль"
-                    name="repeatedNewPassword"
-                    rules={[{ required: true, message: 'Please repeat your new password!' }]}
-                >
-                    <Input.Password onChange={event => setRepeatedNewPassword(event.target.value)} />
-                </Form.Item>
+                    <Form.Item<FieldType>
+                        label="Повторите новый пароль"
+                        name="repeatedNewPassword"
+                        rules={[{ required: true, message: 'Please repeat your new password!' }]}
+                    >
+                        <Input.Password onChange={event => setRepeatedNewPassword(event.target.value)} />
+                    </Form.Item>
 
-            </Form>
-        </Modal>
+                </Form>
+            </Modal>
+        </>
     )
 }

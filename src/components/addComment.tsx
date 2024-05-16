@@ -1,9 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, Dispatch, SetStateAction } from 'react';
 import { Input, Button } from 'antd';
+import { Comment } from '@/views/VideoView';
+import httpService from '@/services/httpService';
+import { RootState } from '@/store/store';
+import { useSelector } from 'react-redux';
 
-export default function AddComment() {
+interface IAddCommentProps {
+    comments: Comment[];
+    setComments: Dispatch<SetStateAction<Comment[]>>;
+    videoId?: string;
+}
+
+export default function AddComment({ comments, setComments, videoId }: IAddCommentProps) {
+    const { user } = useSelector((state: RootState) => state.user);
     const [input, setInput] = useState('');
     const [buttonsVisibility, setButtonsVisibility] = useState(false);
+    
+    async function processAddition() {
+        try {
+            const response = await httpService.post<Comment>('comment/', {
+                content: input,
+                id_author: user?.id,
+                id_video: videoId,
+            });
+
+            setComments([response, ...comments]);
+            setButtonsVisibility(false);
+            setInput('');
+        } catch (error) {
+            console.log(error);
+        }
+    }
     
     return (
         <>
@@ -23,7 +50,7 @@ export default function AddComment() {
                     }}>
                         Отмена
                     </Button>
-                    <Button type='primary'>Оставить комментарий</Button>
+                    <Button type='primary' onClick={processAddition}>Оставить комментарий</Button>
                 </div>
             }
         </>

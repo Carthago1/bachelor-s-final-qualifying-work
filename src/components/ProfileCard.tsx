@@ -28,7 +28,7 @@ export default function ProfileCard() {
                     <Button type="primary" onClick={() => setOpen(true)}>Обновить пароль</Button>
                 </Card>
 
-                <UpdatePassword open={open} setOpen={setOpen} />
+                <UpdatePassword open={open} setOpen={setOpen} userId={user?.id} />
             </Layout.Content>
         </Layout>
     )

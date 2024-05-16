@@ -20,23 +20,23 @@ function MainView() {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        // const fetchUser = async () => {
-        //     const data = await httpService.get<any>('whoami/');
-        //     console.log(data);
-        // }
+        const fetchUser = async () => {
+            const { data } = await httpService.get<any>('whoami/');
+            
+            dispatch(setUser({
+                id: data.id,
+                name: data.first_name,
+                surname: data.last_name,
+                patronymic: data.patronymic,
+                email: data.email,
+                isAdmin: data.is_admin,
+                isStudent: data.is_student,
+                isProfessor: data.is_teacher, 
+            }));
+        }
         const token = localStorageService.get('Authorization');
         if (token) {
-            // ЗАПРОС
-            // fetchUser();
-            dispatch(setUser({
-                id: 1,
-                name: 'Дмитрий',
-                surname: 'Верин',
-                patronymic: 'Сергеевич',
-                email: 'dima.verin.2002@mail.ru',
-                isStudent: true,
-                isProfessor: true,
-            }));
+            fetchUser();
             // ЗАПРОС
             dispatch(setDiscipline([
                 {

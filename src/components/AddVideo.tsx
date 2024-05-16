@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Dispatch, SetStateAction } from 'react';
+import React, { useState, Dispatch, SetStateAction } from 'react';
 import { Modal } from 'antd';
 
 interface IAddVideoProps {
@@ -23,7 +23,7 @@ export default function AddVideo({ open, setOpen }: IAddVideoProps) {
 
     return (
         <Modal
-            title='Обновление пароля'
+            title='Добавление видео'
             open={open}
             onOk={handleOk}
             confirmLoading={confirmLoading}

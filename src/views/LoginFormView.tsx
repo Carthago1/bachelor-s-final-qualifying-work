@@ -36,15 +36,16 @@ const App: React.FC = () => {
             localStorageService.set('Authorization', result.access);
             
             const { data } = await httpService.get<any>('whoami/');
-            console.log(data);
+            
             dispatch(setUser({
+                id: data.id,
                 name: data.first_name,
                 surname: data.last_name,
                 patronymic: data.patronymic,
                 email: data.email,
                 isAdmin: data.is_admin,
                 isStudent: data.is_student,
-                isProfessor: data.isTeacher, 
+                isProfessor: data.is_teacher, 
             }));
 
             navigate('/');

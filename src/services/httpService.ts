@@ -28,6 +28,11 @@ class HttpService {
         const response: AxiosResponse<T> = await this.axiosInstance.post(url, body, config);
         return response.data;
     }
+
+    async put<T>(url: string, body: any, config?: AxiosRequestConfig): Promise<T> {
+        const response: AxiosResponse<T> = await this.axiosInstance.put(url, body, config);
+        return response.data;
+    }
 }
 
 export default new HttpService(BASE_URL);
