@@ -4,8 +4,10 @@ import httpService from '@/services/httpService';
 import localStorageService from '@/services/localStorageService';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUser } from '@/store/user/userSlice';
+import { setDiscipline } from '@/store/discipline/disciplineSlice';
 import { RootState } from '@/store/store';
 import { useNavigate } from 'react-router-dom';
+import { Discipline } from '@/store/discipline/disciplineTypes';
 
 type FieldType = {
     email?: string;
@@ -48,6 +50,17 @@ const App: React.FC = () => {
                 isStudent: data.is_student,
                 isProfessor: data.is_teacher, 
             }));
+
+            const response = await httpService.get<any[]>(`disciplines/?id_student=${data.id}`);
+            const disciplines: Discipline[] = response.map(dis => {
+                return {
+                    id: dis.id_discipline,
+                    name: dis.discipline.name_discipline,
+                    professorId: dis.discipline.id_teacher,
+                }
+            });
+
+            dispatch(setDiscipline(disciplines));
 
             navigate('/');
         } catch (e) {

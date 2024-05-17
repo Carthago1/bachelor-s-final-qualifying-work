@@ -6,6 +6,7 @@ import { Spin } from 'antd';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import localStorageService from '@/services/localStorageService';
 import httpService from '@/services/httpService';
+import { Discipline } from '@/store/discipline/disciplineTypes';
 
 import LoginFormView from './LoginFormView';
 import ProfileView from './ProfileView';
@@ -19,7 +20,7 @@ function MainView() {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        const fetchUser = async () => {
+        const fetchUserData = async () => {
             try {
                 const { data } = await httpService.get<any>('whoami');
                 
@@ -34,43 +35,29 @@ function MainView() {
                     isProfessor: data.is_teacher, 
                 }));
 
-                const response = await httpService.get(`disciplines/?id_student=${data.id}`);
-                console.log(response);
+                const response = await httpService.get<any[]>(`disciplines/?id_student=${data.id}`);
+                const disciplines: Discipline[] = response.map(dis => {
+                    return {
+                        id: dis.id_discipline,
+                        name: dis.discipline.name_discipline,
+                        professorId: dis.discipline.id_teacher,
+                    }
+                });
+
+                dispatch(setDiscipline(disciplines));
             } catch (error) {
                 console.log(error);
+            } finally {
+                setLoading(false);
             }
         }
 
-        // const fetchDisciplines = async () => {
-        //     try {
-        //         // const response = await()
-        //         dispatch(setDiscipline([
-        //             {
-        //                 id: 1,
-        //                 name: 'Алгебра',
-        //             },
-        //             {
-        //                 id: 2,
-        //                 name: 'Физика',
-        //             }, 
-        //             {
-        //                 id: 10,
-        //                 name: 'Геометрия'
-        //             }
-        //         ]));
-        //     } catch (error) {
-        //         console.log(error);
-        //     } finally {
-        //         setLoading(false);
-        //     }
-        // }
-
         const token = localStorageService.get('Authorization');
         if (token) {
-            fetchUser();
-            // fetchDisciplines();
+            fetchUserData();
+        } else {
+            setLoading(false);
         }
-        setLoading(false);
 
     }, [dispatch]);
 

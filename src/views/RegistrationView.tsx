@@ -5,7 +5,9 @@ import { RootState } from '@/store/store';
 import { Flex, Form, Spin, Input, Button, message } from 'antd';
 import httpService from '@/services/httpService';
 import { setUser } from '@/store/user/userSlice';
+import { setDiscipline } from '@/store/discipline/disciplineSlice';
 import localStorageService from '@/services/localStorageService';
+import { Discipline } from '@/store/discipline/disciplineTypes';
 
 type FieldType = {
     name?: string;
@@ -68,6 +70,17 @@ export default function RegistrationView() {
                 isStudent: data.is_student,
                 isProfessor: data.is_teacher, 
             }));
+
+            const response = await httpService.get<any[]>(`disciplines/?id_student=${data.id}`);
+            const disciplines: Discipline[] = response.map(dis => {
+                return {
+                    id: dis.id_discipline,
+                    name: dis.discipline.name_discipline,
+                    professorId: dis.discipline.id_teacher,
+                }
+            });
+
+            dispatch(setDiscipline(disciplines));
 
             navigate('/');
         } catch(e) {

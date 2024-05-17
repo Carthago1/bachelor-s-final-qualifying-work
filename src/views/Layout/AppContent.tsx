@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Layout, Row, Col } from 'antd';
+import { Layout, Row, Col, Empty } from 'antd';
 import { RootState } from '@/store/store';
 import { useSelector } from 'react-redux';
 import VideoCard from '@/components/VideoCard';
 import { Link } from 'react-router-dom';
+import httpService from '@/services/httpService';
 
 const contentStyle: React.CSSProperties = {
     textAlign: 'center',
     minHeight: 'calc(100vh - 60px)',
     color: '#fff',
-    backgroundColor: '#0958d9',
+    backgroundColor: '#a5a47f91',
     padding: '1rem',
 };
 
@@ -26,27 +27,33 @@ export default function AppContent() {
     const [content, setContent] = useState<Array<IContent>>([]);
 
     useEffect(() => {
-        // ЗАПРОС
-        setContent([
-            {
-                id: 1,
-                title: 'Лекция 1',
-                link: '/video/1',
-                date: new Date(),
-            },
-            {
-                id: 2,
-                title: 'Лекция 2',
-                link: '/video/2',
-                date: new Date(),
+        async function fetchVideos() {
+            try {
+                const response = await httpService.get<any[]>(`video/?id_discipline=${discipline.selectedDiscipline}`);
+                const videos: IContent[] = response.map(video => {
+                    return {
+                        id: video.id,
+                        title: video.title,
+                        link: `/video/${video.id}`,
+                        date: video.upload_date,
+                    }
+                });
+
+                setContent(videos);
+            } catch(error) {
+                console.log(error);
             }
-        ])
+        }
+
+        if (discipline.selectedDiscipline) {
+            fetchVideos();
+        }
     }, [discipline.selectedDiscipline]);
 
     return (
         <Layout.Content style={contentStyle}>
             <Row justify={'space-evenly'} gutter={[0, 20]}>
-                {content.map((cont, index) => {
+                {content.length ? content.map((cont, index) => {
                     const key = `col-${index}`;
                     return (
                         <Col
@@ -62,7 +69,9 @@ export default function AppContent() {
                             </Link>}
                         </Col>
                     );
-                })}
+                }) : 
+                    <Empty description='Здесь пока что пусто, выберете другой предмет' />
+                }
             </Row>
         </Layout.Content>
     )

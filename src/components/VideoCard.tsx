@@ -10,13 +10,16 @@ interface IVideoCard {
 }
 
 export default function VideoCard({ alt, src, title, date }: IVideoCard) {
+    const convertedDate = new Date(date);
+    const formatedDate = `${convertedDate.getDate()}.${convertedDate.getMonth() + 1}.${convertedDate.getFullYear()}`
+
     return (
         <Card
             hoverable
             style={{width: 240}}
             cover={<img alt={alt} src={src ? src : im} />}
         >
-            <Card.Meta title={title} description={date.toString()} />
+            <Card.Meta title={title} description={formatedDate} />
         </Card>
     )
 }
