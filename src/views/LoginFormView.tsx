@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Flex, Button, Form, Input, Spin } from 'antd';
+import { Flex, Button, Form, Input, Spin, message } from 'antd';
 import httpService from '@/services/httpService';
 import localStorageService from '@/services/localStorageService';
 import { useSelector, useDispatch } from 'react-redux';
@@ -17,6 +17,7 @@ const App: React.FC = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
+    const [messageApi, contextHolder] = message.useMessage();
 
     useEffect(() => {
         if (authorized) {
@@ -50,15 +51,19 @@ const App: React.FC = () => {
 
             navigate('/');
         } catch (e) {
-            console.log(e);
+            messageApi.open({
+                type: 'error',
+                content: 'Введены неверные данные',
+            });
+        } finally {
+            setLoading(false);
         }
-
-        setLoading(false);
     }
 
     return (
         <Flex justify={'center'} align={'center'} style={{height: '100vh'}} vertical>
             {loading && <Spin fullscreen/>}
+            {contextHolder}
             <Form
                 name="basic"
                 labelCol={{ span: 8 }}

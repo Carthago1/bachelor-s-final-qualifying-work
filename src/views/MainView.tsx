@@ -15,14 +15,13 @@ import RegistrationView from './RegistrationView';
 import VideoView from './VideoView';
 
 function MainView() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [loading, setLoading] = useState(true);
     const dispatch = useDispatch();
 
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const { data } = await httpService.get<any>('whoami/');
+                const { data } = await httpService.get<any>('whoami');
                 
                 dispatch(setUser({
                     id: data.id,
@@ -34,34 +33,45 @@ function MainView() {
                     isStudent: data.is_student,
                     isProfessor: data.is_teacher, 
                 }));
+
+                const response = await httpService.get(`disciplines/?id_student=${data.id}`);
+                console.log(response);
             } catch (error) {
                 console.log(error);
+            } finally {
+                setLoading(false);
             }
         }
+
+        // const fetchDisciplines = async () => {
+        //     try {
+        //         // const response = await()
+        //         dispatch(setDiscipline([
+        //             {
+        //                 id: 1,
+        //                 name: 'Алгебра',
+        //             },
+        //             {
+        //                 id: 2,
+        //                 name: 'Физика',
+        //             }, 
+        //             {
+        //                 id: 10,
+        //                 name: 'Геометрия'
+        //             }
+        //         ]));
+        //     } catch (error) {
+        //         console.log(error);
+        //     } finally {
+        //         setLoading(false);
+        //     }
+        // }
+
         const token = localStorageService.get('Authorization');
         if (token) {
             fetchUser();
-            // ЗАПРОС
-            dispatch(setDiscipline([
-                {
-                    id: 1,
-                    name: 'Алгебра',
-                },
-                {
-                    id: 2,
-                    name: 'Физика',
-                }, 
-                {
-                    id: 10,
-                    name: 'Геометрия'
-                }
-            ]));
+            // fetchDisciplines();
         }
-
-        setIsLoggedIn(() => {
-            setLoading(false);
-            return !!token;
-        });
     }, [dispatch]);
 
     if (loading) {

@@ -83,7 +83,6 @@ export default function VideoView() {
         }
 
         if (e.key === '2' && order === 'increasing') {
-            // const reversedComments = [...comments].reverse();
             setOrder('decreasing');
             setComments([...comments].reverse());
         }

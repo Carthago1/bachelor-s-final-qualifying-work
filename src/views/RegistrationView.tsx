@@ -71,7 +71,10 @@ export default function RegistrationView() {
 
             navigate('/');
         } catch(e) {
-            console.log(e);
+            messageApi.open({
+                type: 'error',
+                content: 'Пользователь с такими данными уже существует',
+            });
         }
 
         setLoading(false);

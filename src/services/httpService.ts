@@ -20,23 +20,39 @@ class HttpService {
     }
 
     async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
-        const response: AxiosResponse<T> = await this.axiosInstance.get(url, config);
-        return response.data;
+        try {
+            const response: AxiosResponse<T> = await this.axiosInstance.get(url, config);
+            return response.data;
+        } catch (e) {
+            throw e;
+        }
     }
 
     async post<T>(url: string, body: any, config?: AxiosRequestConfig): Promise<T> {
-        const response: AxiosResponse<T> = await this.axiosInstance.post(url, body, config);
-        return response.data;
+        try {
+            const response: AxiosResponse<T> = await this.axiosInstance.post(url, body, config);
+            return response.data;
+        } catch (e) {
+            throw e;
+        }
     }
 
     async put<T>(url: string, body: any, config?: AxiosRequestConfig): Promise<T> {
-        const response: AxiosResponse<T> = await this.axiosInstance.put(url, body, config);
-        return response.data;
+        try {
+            const response: AxiosResponse<T> = await this.axiosInstance.put(url, body, config);
+            return response.data;
+        } catch (e) {
+            throw e;
+        }
     }
 
     async delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
-        const response: AxiosResponse<T> = await this.axiosInstance.delete(url, config);
-        return response.data;
+        try {
+            const response: AxiosResponse<T> = await this.axiosInstance.delete(url, config);
+            return response.data;
+        } catch (e) {
+            throw e;
+        }
     }
 }
 
