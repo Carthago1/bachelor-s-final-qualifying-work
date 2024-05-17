@@ -21,18 +21,22 @@ function MainView() {
 
     useEffect(() => {
         const fetchUser = async () => {
-            const { data } = await httpService.get<any>('whoami/');
-            
-            dispatch(setUser({
-                id: data.id,
-                name: data.first_name,
-                surname: data.last_name,
-                patronymic: data.patronymic,
-                email: data.email,
-                isAdmin: data.is_admin,
-                isStudent: data.is_student,
-                isProfessor: data.is_teacher, 
-            }));
+            try {
+                const { data } = await httpService.get<any>('whoami/');
+                
+                dispatch(setUser({
+                    id: data.id,
+                    name: data.first_name,
+                    surname: data.last_name,
+                    patronymic: data.patronymic,
+                    email: data.email,
+                    isAdmin: data.is_admin,
+                    isStudent: data.is_student,
+                    isProfessor: data.is_teacher, 
+                }));
+            } catch (error) {
+                console.log(error);
+            }
         }
         const token = localStorageService.get('Authorization');
         if (token) {

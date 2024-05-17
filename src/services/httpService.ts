@@ -33,6 +33,11 @@ class HttpService {
         const response: AxiosResponse<T> = await this.axiosInstance.put(url, body, config);
         return response.data;
     }
+
+    async delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
+        const response: AxiosResponse<T> = await this.axiosInstance.delete(url, config);
+        return response.data;
+    }
 }
 
 export default new HttpService(BASE_URL);

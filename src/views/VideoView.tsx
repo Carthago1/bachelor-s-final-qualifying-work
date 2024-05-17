@@ -28,11 +28,19 @@ const containerStyle: React.CSSProperties = {
     gap: '1rem'
 }
 
+interface Fio {
+    first_name: string;
+    last_name: string;
+    patronymic: string;
+}
+
 export interface Comment {
     id: number;
     content: string;
     id_author: number;
     id_video: number;
+    fio: Fio;
+    creation_date: string;
 }
 
 interface VideoData {
@@ -48,9 +56,19 @@ export default function VideoView() {
     const navigate = useNavigate();
     const { videoId } = useParams();
     const { authorized } = useSelector((state: RootState) => state.user);
+    const { user } = useSelector((state: RootState) => state.user);
     const [comments, setComments] = useState<Comment[]>([]);
     const [videoData, setVideoData] = useState<VideoData | null>(null);
     const [loading, setLoading] = useState(true);
+
+    async function onDeleteClick(commentId: number) {
+        try {
+            await httpService.delete(`comment/${commentId}/`);
+            setComments(comments.filter(comment => comment.id !== commentId));
+        } catch(error) {
+            console.log(error);
+        }
+    }
 
     useEffect(() => {
         if (!authorized) {
@@ -94,7 +112,13 @@ export default function VideoView() {
                         <AddComment comments={comments} setComments={setComments} videoId={videoId} />
                         <Divider />
                         {comments.map(comment => (
-                            <VideoComment key={comment.id} content={comment.content} authorId={comment.id_author} />
+                            <VideoComment 
+                                key={comment.id} 
+                                comment={comment} 
+                                userId={user?.id}
+                                authorVideoId={videoData?.id_teacher}
+                                onDeleteClick={onDeleteClick}
+                            />
                         ))}
                     </div>
                 </Layout.Content>
