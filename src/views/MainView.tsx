@@ -38,8 +38,6 @@ function MainView() {
                 console.log(response);
             } catch (error) {
                 console.log(error);
-            } finally {
-                setLoading(false);
             }
         }
 
@@ -72,6 +70,8 @@ function MainView() {
             fetchUser();
             // fetchDisciplines();
         }
+        setLoading(false);
+
     }, [dispatch]);
 
     if (loading) {
