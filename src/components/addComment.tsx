@@ -9,9 +9,10 @@ interface IAddCommentProps {
     comments: Comment[];
     setComments: Dispatch<SetStateAction<Comment[]>>;
     videoId?: string;
+    order: 'increasing' | 'decreasing';
 }
 
-export default function AddComment({ comments, setComments, videoId }: IAddCommentProps) {
+export default function AddComment({ comments, setComments, videoId, order }: IAddCommentProps) {
     const { user } = useSelector((state: RootState) => state.user);
     const [input, setInput] = useState('');
     const [buttonsVisibility, setButtonsVisibility] = useState(false);
@@ -23,8 +24,12 @@ export default function AddComment({ comments, setComments, videoId }: IAddComme
                 id_author: user?.id,
                 id_video: videoId,
             });
-
-            setComments([response, ...comments]);
+            
+            if (order === 'increasing') {
+                setComments([response, ...comments]);
+            } else {
+                setComments([...comments, response]);
+            }
             setButtonsVisibility(false);
             setInput('');
         } catch (error) {
