@@ -1,10 +1,14 @@
 import React from 'react';
-import { Layout } from 'antd';
 
-export default function VideoPlayer() {
+interface IVideoPlayerProps {
+    videoSource?: string;
+}
+
+export default function VideoPlayer({videoSource}: IVideoPlayerProps) {
+    console.log(videoSource);
     return (
         <video controls preload="metadata" style={{width: '75%'}}>
-            <source src="http://localhost:8000/videos/example.mp4" type="video/mp4"/>
+            <source src={videoSource} type="video/mp4"/>
         </video>
     )
 }
