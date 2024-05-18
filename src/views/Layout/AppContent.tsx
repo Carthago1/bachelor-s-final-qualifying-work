@@ -36,6 +36,7 @@ export default function AppContent() {
                         title: video.title,
                         link: `/video/${video.id}`,
                         date: video.upload_date,
+                        previewURL: video.preview_image,
                     }
                 });
 

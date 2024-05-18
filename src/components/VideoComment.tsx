@@ -19,7 +19,8 @@ export default function VideoComment({ comment, userId, authorVideoId, onDeleteC
                     {comment.id_author === authorVideoId && <CheckOutlined style={{marginLeft: 10}} />}
                 </div>
                 {userId === comment.id_author && 
-                    <DeleteOutlined style={{cursor: 'pointer'}} onClick={() => onDeleteClick(comment.id)} />}
+                    <DeleteOutlined style={{cursor: 'pointer'}} onClick={() => onDeleteClick(comment.id)} />
+                }
             </div>
             <div style={{fontSize: '1rem'}}>
                 {comment.content}

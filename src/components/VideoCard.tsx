@@ -16,8 +16,8 @@ export default function VideoCard({ alt, src, title, date }: IVideoCard) {
     return (
         <Card
             hoverable
-            style={{width: 240}}
-            cover={<img alt={alt} src={src ? src : im} />}
+            style={{width: 240, height: 300}}
+            cover={<img alt={alt} src={src ? src : im} style={{height: 200, objectFit: 'cover'}} />}
         >
             <Card.Meta title={title} description={formatedDate} />
         </Card>

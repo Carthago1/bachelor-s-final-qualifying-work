@@ -8,6 +8,7 @@ import getInitialsFullName from '@/utils/getInitialsFullName';
 import localStorageService from '@/services/localStorageService';
 import { useDispatch } from 'react-redux';
 import { clearUser } from '@/store/user/userSlice';
+import { resetDiscipline } from '@/store/discipline/disciplineSlice';
 
 export default function HeaderRight() {
     const navigate = useNavigate();
@@ -16,6 +17,7 @@ export default function HeaderRight() {
     function logout() {
         localStorageService.remove('Authorization');
         dispatch(clearUser());
+        dispatch(resetDiscipline());
         navigate('/login', {replace: true});
     }
 

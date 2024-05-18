@@ -15,9 +15,13 @@ const disciplineSlice = createSlice({
         },
         setSelectedDiscipline(state, action: PayloadAction<number | null>) {
             state.selectedDiscipline = action.payload;
+        },
+        resetDiscipline(state) {
+            state.discipline = [];
+            state.selectedDiscipline = null;
         }
     }
 });
 
-export const { setDiscipline, setSelectedDiscipline } = disciplineSlice.actions;
+export const { setDiscipline, setSelectedDiscipline, resetDiscipline } = disciplineSlice.actions;
 export default disciplineSlice.reducer;
