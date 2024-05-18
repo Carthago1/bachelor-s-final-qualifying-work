@@ -15,12 +15,12 @@ interface IAddVideoProps {
 
 export default function AddVideo({ open, setOpen, content, setContent }: IAddVideoProps) {
     const [confirmLoading, setConfirmLoading] = useState(false);
-    const { discipline } = useSelector((state: RootState) => state.discipline);
+    const discipline = useSelector((state: RootState) => state.discipline);
     const { user } = useSelector((state: RootState) => state.user);
-    const options = discipline.map(discipline => {
+    const options = discipline.discipline.map(d => {
         return {
-            value: discipline.id,
-            label: discipline.name,
+            value: d.id,
+            label: d.name,
         }
     })
     const [file, setFile] = useState<any>(null);
@@ -47,8 +47,10 @@ export default function AddVideo({ open, setOpen, content, setContent }: IAddVid
                 previewURL: response.preview_image,
                 description: response.description,
             }
-            setContent([video, ...content]);
-            console.log(video);
+            if (+selected === discipline.selectedDiscipline) {
+                setContent([video, ...content]);
+            }
+
         } catch(error) {
             console.log(error);
         } finally {
