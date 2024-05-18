@@ -38,10 +38,17 @@ export default function HeaderRight() {
     ]
     
     return (
-        <Dropdown menu={{items}} placement='bottomRight'>
-            <Button>
-                {user && getInitialsFullName(user.name, user.surname, user.patronymic)}
-            </Button>
-        </Dropdown>
+        <div>
+            {user?.isAdmin && 
+                <Button style={{marginRight: 10}} onClick={() => navigate('/admin')}>
+                    Панель Администратора
+                </Button>
+            }
+            <Dropdown menu={{items}} placement='bottomRight'>
+                <Button>
+                    {user && getInitialsFullName(user.name, user.surname, user.patronymic)}
+                </Button>
+            </Dropdown>
+        </div>
     )
 }

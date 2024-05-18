@@ -14,6 +14,7 @@ import HomeView from './HomeView';
 import NotFoundView from './NotFoundView';
 import RegistrationView from './RegistrationView';
 import VideoView from './VideoView';
+import AdminView from './AdminView';
 
 function MainView() {
     const [loading, setLoading] = useState(true);
@@ -23,7 +24,7 @@ function MainView() {
         const fetchUserData = async () => {
             try {
                 const { data } = await httpService.get<any>('whoami');
-                
+
                 dispatch(setUser({
                     id: data.id,
                     name: data.first_name,
@@ -32,7 +33,8 @@ function MainView() {
                     email: data.email,
                     isAdmin: data.is_admin,
                     isStudent: data.is_student,
-                    isProfessor: data.is_teacher, 
+                    isProfessor: data.is_teacher,
+                    groupID: data.id_group, 
                 }));
 
                 const response = await httpService.get<any[]>(`disciplines/?id_student=${data.id}`);
@@ -73,6 +75,7 @@ function MainView() {
                 <Route path='/profile' element={<ProfileView />} />
                 <Route path='/registration' element={<RegistrationView />} />
                 <Route path='/video/:videoId' element={<VideoView />} />
+                <Route path='/admin' element={<AdminView />} />
                 <Route path='*' element={<NotFoundView />} />
             </Routes>
         </Router>

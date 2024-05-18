@@ -69,6 +69,7 @@ export default function RegistrationView() {
                 isAdmin: data.is_admin,
                 isStudent: data.is_student,
                 isProfessor: data.is_teacher, 
+                groupID: data.group_id,
             }));
 
             const response = await httpService.get<any[]>(`disciplines/?id_student=${data.id}`);

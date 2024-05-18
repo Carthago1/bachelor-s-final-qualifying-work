@@ -5,7 +5,7 @@ export interface User {
     patronymic: string;
     email: string;
     isStudent?: boolean;
-    groupID?: number;
+    groupID: number[];
     isProfessor?: boolean;
     isAdmin?: boolean;
 }

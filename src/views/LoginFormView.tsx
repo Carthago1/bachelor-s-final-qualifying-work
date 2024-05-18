@@ -48,7 +48,8 @@ const App: React.FC = () => {
                 email: data.email,
                 isAdmin: data.is_admin,
                 isStudent: data.is_student,
-                isProfessor: data.is_teacher, 
+                isProfessor: data.is_teacher,
+                groupID: data.group_id, 
             }));
 
             const response = await httpService.get<any[]>(`disciplines/?id_student=${data.id}`);

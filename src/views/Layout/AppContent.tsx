@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Layout, Row, Col, Empty } from 'antd';
-import { RootState } from '@/store/store';
-import { useSelector } from 'react-redux';
 import VideoCard from '@/components/VideoCard';
 import { Link } from 'react-router-dom';
-import httpService from '@/services/httpService';
+import { IContent } from './AppLayout';
 
 const contentStyle: React.CSSProperties = {
     textAlign: 'center',
@@ -14,43 +12,11 @@ const contentStyle: React.CSSProperties = {
     padding: '1rem',
 };
 
-interface IContent {
-    id: number;
-    title: string;
-    link: string;
-    date: Date;
-    previewURL?: string;
+interface IContentProps {
+    content: IContent[];
 }
 
-export default function AppContent() {
-    const discipline = useSelector((state: RootState) => state.discipline);
-    const [content, setContent] = useState<Array<IContent>>([]);
-
-    useEffect(() => {
-        async function fetchVideos() {
-            try {
-                const response = await httpService.get<any[]>(`video/?id_discipline=${discipline.selectedDiscipline}`);
-                const videos: IContent[] = response.map(video => {
-                    return {
-                        id: video.id,
-                        title: video.title,
-                        link: `/video/${video.id}`,
-                        date: video.upload_date,
-                        previewURL: video.preview_image,
-                    }
-                });
-
-                setContent(videos);
-            } catch(error) {
-                console.log(error);
-            }
-        }
-
-        if (discipline.selectedDiscipline) {
-            fetchVideos();
-        }
-    }, [discipline.selectedDiscipline]);
-
+export default function AppContent({content}: IContentProps) {
     return (
         <Layout.Content style={contentStyle}>
             <Row justify={'space-evenly'} gutter={[0, 20]}>

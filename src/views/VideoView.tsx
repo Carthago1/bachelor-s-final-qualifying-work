@@ -12,6 +12,7 @@ import AddComment from '@/components/addComment';
 import VideoComment from '@/components/VideoComment';
 import type { MenuProps } from 'antd';
 import { AlignLeftOutlined } from '@ant-design/icons';
+import getCommentDeclension from '@/utils/getCommentDeclension';
 
 
 const contentStyle: React.CSSProperties = {
@@ -53,6 +54,7 @@ interface VideoData {
     id_teacher: number;
     title: string;
     upload_date: string;
+    description: string;
 }
 
 export default function VideoView() {
@@ -64,6 +66,7 @@ export default function VideoView() {
     const [videoData, setVideoData] = useState<VideoData | null>(null);
     const [loading, setLoading] = useState(true);
     const [order, setOrder] = useState<'increasing' | 'decreasing'>('increasing');
+    const [isDescriptionShow, setIsDescriptionShow] = useState(false);
 
     const items: MenuProps['items'] = [
         {
@@ -138,31 +141,38 @@ export default function VideoView() {
     return (
         <Layout>
             <AppHeader />
-                <Layout.Content style={contentStyle}>
-                    <div style={containerStyle}>
-                        <VideoPlayer videoSource={videoData?.file_link} />
-                        <AddComment comments={comments} setComments={setComments} videoId={videoId} order={order} />
-                        <div style={{width: '100%', display: 'flex', gap: 10}}>
-                            <p style={{fontWeight: 'bold', fontSize: '1.5rem', margin: 0 }}>{comments.length} комментариев</p>
-                            <Dropdown menu={menuProps}>
-                                <Button>
-                                    <AlignLeftOutlined />
-                                    Упорядочить
-                                </Button>
-                            </Dropdown>
-                        </div>
-                        <Divider />
-                        {comments.map(comment => (
-                            <VideoComment 
-                                key={comment.id} 
-                                comment={comment} 
-                                userId={user?.id}
-                                authorVideoId={videoData?.id_teacher}
-                                onDeleteClick={onDeleteClick}
-                            />
-                        ))}
+            <Layout.Content style={contentStyle}>
+                <div style={containerStyle}>
+                    <VideoPlayer videoSource={videoData?.file_link} />
+                    <div style={{width: '100%'}}>
+                        <p style={{fontWeight: 'bold', fontSize: 20}}>{videoData?.title}</p>
+                        {isDescriptionShow ? 
+                            <p>{videoData?.description}</p> :
+                            <span style={{cursor: 'pointer', color: 'gray'}} onClick={() => setIsDescriptionShow(true)}>Показать описание</span>
+                        }
                     </div>
-                </Layout.Content>
+                    <AddComment comments={comments} setComments={setComments} videoId={videoId} order={order} />
+                    <div style={{width: '100%', display: 'flex', gap: 10}}>
+                        <p style={{fontWeight: 'bold', fontSize: '1.5rem', margin: 0 }}>{getCommentDeclension(comments.length)}</p>
+                        <Dropdown menu={menuProps}>
+                            <Button>
+                                <AlignLeftOutlined />
+                                Упорядочить
+                            </Button>
+                        </Dropdown>
+                    </div>
+                    <Divider />
+                    {comments.map(comment => (
+                        <VideoComment 
+                            key={comment.id} 
+                            comment={comment} 
+                            userId={user?.id}
+                            authorVideoId={videoData?.id_teacher}
+                            onDeleteClick={onDeleteClick}
+                        />
+                    ))}
+                </div>
+            </Layout.Content>
         </Layout>
     )
 }

@@ -4,13 +4,16 @@ import { PlusOutlined } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import httpService from '@/services/httpService';
+import { IContent } from '@/views/Layout/AppLayout';
 
 interface IAddVideoProps {
     open: boolean;
     setOpen: Dispatch<SetStateAction<boolean>>;
+    content: IContent[];
+    setContent: Dispatch<SetStateAction<IContent[]>>;
 }
 
-export default function AddVideo({ open, setOpen }: IAddVideoProps) {
+export default function AddVideo({ open, setOpen, content, setContent }: IAddVideoProps) {
     const [confirmLoading, setConfirmLoading] = useState(false);
     const { discipline } = useSelector((state: RootState) => state.discipline);
     const { user } = useSelector((state: RootState) => state.user);
@@ -32,17 +35,26 @@ export default function AddVideo({ open, setOpen }: IAddVideoProps) {
         formData.append('title', title);
         formData.append('id_discipline', selected);
         formData.append('id_teacher', `${user?.id}`);
+        formData.append('description', description);
         
         try {
-            const response = await httpService.post('video/', formData);
+            const response: any = await httpService.post('video/', formData);
+            const video: IContent = {
+                id: response.id,
+                title: response.title,
+                link: `/video/${response.id}`,
+                date: response.upload_date,
+                previewURL: response.preview_image,
+                description: response.description,
+            }
+            setContent([video, ...content]);
+            console.log(video);
         } catch(error) {
             console.log(error);
-        }
-        
-        setTimeout(() => {
+        } finally {
             setOpen(false);
             setConfirmLoading(false);
-        }, 2000);
+        }
     }
 
     function handleCancel() {
@@ -108,7 +120,6 @@ export default function AddVideo({ open, setOpen }: IAddVideoProps) {
                         </button>
                     </Upload>
                 </Form.Item>
-
             </Form>
         </Modal>
     )

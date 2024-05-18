@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Dispatch, SetStateAction } from 'react';
 import { Button, Layout } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store/store';
@@ -6,6 +6,7 @@ import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
 import { setSelectedDiscipline } from '@/store/discipline/disciplineSlice';
 import AddVideo from '@/components/AddVideo';
+import { IContent } from './AppLayout';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -15,7 +16,12 @@ const siderStyle: React.CSSProperties = {
     // backgroundColor: '#1677ff',
 };
 
-export default function AppSider() {
+interface IAppSiderProps {
+    content: IContent[];
+    setContent: Dispatch<SetStateAction<IContent[]>>;
+}
+
+export default function AppSider({content, setContent}: IAppSiderProps) {
     const disciplines = useSelector((state: RootState) => state.discipline);
     const { user } = useSelector((state: RootState) => state.user);
     const [open, setOpen] = useState(false);
@@ -34,14 +40,14 @@ export default function AppSider() {
         <Layout.Sider width="25%" style={siderStyle}>
             {user?.isProfessor &&
                 <>
-                <Button 
-                    type='primary' 
-                    style={{width: '100%', marginBottom: '1rem'}}
-                    onClick={() => setOpen(true)}
-                >
-                    Добавить видео
-                </Button>
-                <AddVideo open={open} setOpen={setOpen} />
+                    <Button 
+                        type='primary' 
+                        style={{width: '100%', marginBottom: '1rem'}}
+                        onClick={() => setOpen(true)}
+                    >
+                        Добавить видео
+                    </Button>
+                    <AddVideo open={open} setOpen={setOpen} content={content} setContent={setContent} />
                 </>
             }
             <Menu
