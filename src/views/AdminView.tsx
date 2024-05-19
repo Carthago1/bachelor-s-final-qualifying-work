@@ -72,6 +72,7 @@ export default function AdminView() {
         async function fetchUsersData() {
             try {
                 const response = await httpService.get<any[]>('users/');
+
                 const usersList: User[] = response.map(u => {
                     return {
                         id: u.id,

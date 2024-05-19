@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card } from 'antd';
 import im from '../assets/video.jpg';
+import { Spin } from 'antd';
 
 interface IVideoCard {
     alt?: string;
@@ -31,12 +32,15 @@ export default function VideoCard({ alt, src, title, date }: IVideoCard) {
     }, [src]);
     
     return (
-        <Card
-            hoverable
-            style={{width: 240, height: 300}}
-            cover={<img alt={alt} src={imgSrc} style={{height: 200, objectFit: 'cover'}} />}
-        >
-            <Card.Meta title={title} description={formatedDate} />
-        </Card>
+        <>
+            {loading && <Spin fullscreen />}
+            <Card
+                hoverable
+                style={{width: 240, height: 300}}
+                cover={<img alt={alt} src={imgSrc} style={{height: 200, objectFit: 'cover'}} />}
+            >
+                <Card.Meta title={title} description={formatedDate} />
+            </Card>
+        </>
     )
 }

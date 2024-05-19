@@ -72,7 +72,7 @@ export default function RegistrationView() {
                 groupID: data.group_id,
             }));
 
-            const response = await httpService.get<any[]>(`disciplines/?id_student=${data.id}`);
+            const response = await httpService.get<any[]>(`disciplines/?id_group=${data.id_group}`);
             const disciplines: Discipline[] = response.map(dis => {
                 return {
                     id: dis.id_discipline,

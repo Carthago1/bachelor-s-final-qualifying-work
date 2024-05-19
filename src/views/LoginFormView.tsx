@@ -51,17 +51,19 @@ const App: React.FC = () => {
                 isProfessor: data.is_teacher,
                 groupID: data.group_id, 
             }));
-
-            const response = await httpService.get<any[]>(`disciplines/?id_student=${data.id}`);
-            const disciplines: Discipline[] = response.map(dis => {
-                return {
-                    id: dis.id_discipline,
-                    name: dis.discipline.name_discipline,
-                    professorId: dis.discipline.id_teacher,
-                }
-            });
-
-            dispatch(setDiscipline(disciplines));
+            
+            if (data.id_group.length !== 0) {
+                const response = await httpService.get<any[]>(`disciplines/?id_group=${data.id_group}`);
+                const disciplines: Discipline[] = response.map(dis => {
+                    return {
+                        id: dis.id_discipline,
+                        name: dis.discipline.name_discipline,
+                        professorId: dis.discipline.id_teacher,
+                    }
+                });
+    
+                dispatch(setDiscipline(disciplines));
+            }
 
             navigate('/');
         } catch (e) {

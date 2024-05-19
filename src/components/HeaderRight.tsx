@@ -32,7 +32,7 @@ export default function HeaderRight() {
         {
             key: '2',
             label: (
-                <span onClick={logout}>Выйти</span>
+                <div onClick={logout}>Выйти</div>
             ),
         }
     ]

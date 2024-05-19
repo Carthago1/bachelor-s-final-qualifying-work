@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { setUser } from '@/store/user/userSlice';
 import { setDiscipline } from '@/store/discipline/disciplineSlice';
 import { Spin } from 'antd';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import localStorageService from '@/services/localStorageService';
 import httpService from '@/services/httpService';
 import { Discipline } from '@/store/discipline/disciplineTypes';
@@ -24,7 +24,7 @@ function MainView() {
         const fetchUserData = async () => {
             try {
                 const { data } = await httpService.get<any>('whoami');
-
+                
                 dispatch(setUser({
                     id: data.id,
                     name: data.first_name,
@@ -37,16 +37,17 @@ function MainView() {
                     groupID: data.id_group, 
                 }));
 
-                const response = await httpService.get<any[]>(`disciplines/?id_student=${data.id}`);
-                const disciplines: Discipline[] = response.map(dis => {
-                    return {
-                        id: dis.id_discipline,
-                        name: dis.discipline.name_discipline,
-                        professorId: dis.discipline.id_teacher,
-                    }
-                });
-
-                dispatch(setDiscipline(disciplines));
+                if (data.id_group.length !== 0) {
+                    const response = await httpService.get<any[]>(`disciplines/?id_group=${data.id_group}`);
+                    const disciplines: Discipline[] = response.map(dis => {
+                        return {
+                            id: dis.id_discipline,
+                            name: dis.discipline.name_discipline,
+                            professorId: dis.discipline.id_teacher,
+                        }
+                    });
+                    dispatch(setDiscipline(disciplines));
+                }
             } catch (error) {
                 console.log(error);
             } finally {

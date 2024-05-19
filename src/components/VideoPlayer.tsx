@@ -16,7 +16,6 @@ export default function VideoPlayer({videoSource}: IVideoPlayerProps) {
 
         const handleTimeUpdate = () => {
             setCurrentTime(videoElement.currentTime);
-            console.log(videoElement.currentTime);
         }
 
         videoElement.addEventListener('timeupdate', handleTimeUpdate);
@@ -27,6 +26,7 @@ export default function VideoPlayer({videoSource}: IVideoPlayerProps) {
     }, []);
 
     return (
+        // <video ref={videoRef} controls preload="metadata" style={{width: '75%'}} autoPlay={!!videoSource}>
         <video ref={videoRef} controls preload="metadata" style={{width: '75%'}}>
             <source src={videoSource} type="video/mp4"/>
         </video>

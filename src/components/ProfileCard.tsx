@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Layout, Card, Button, Modal } from 'antd';
+import { Layout, Card, Button } from 'antd';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import UpdatePassword from './UpdatePassword';
@@ -16,7 +16,7 @@ export default function ProfileCard() {
     const { user } = useSelector((state: RootState) => state.user);
     const [open, setOpen] = useState(false);
 
-    const title = `Профиль ${user?.isStudent ? 'студента' : user?.isProfessor ? 'преподавателя' : 'администратора'}`
+    const title = `Профиль ${user?.isAdmin ? 'администратора' : user?.isProfessor ? 'преподавателя' : 'студента'}`
     return (
         <Layout>
             <Layout.Content style={contentStyle}>

@@ -13,6 +13,7 @@ import VideoComment from '@/components/VideoComment';
 import type { MenuProps } from 'antd';
 import { AlignLeftOutlined } from '@ant-design/icons';
 import getCommentDeclension from '@/utils/getCommentDeclension';
+import ReactionPanel from '@/components/ReactionPanel';
 
 
 const contentStyle: React.CSSProperties = {
@@ -144,6 +145,7 @@ export default function VideoView() {
             <Layout.Content style={contentStyle}>
                 <div style={containerStyle}>
                     <VideoPlayer videoSource={videoData?.file_link} />
+                    <ReactionPanel videoId={videoId} userId={user?.id} />
                     <div style={{width: '100%'}}>
                         <p style={{fontWeight: 'bold', fontSize: 20}}>{videoData?.title}</p>
                         {isDescriptionShow ? 

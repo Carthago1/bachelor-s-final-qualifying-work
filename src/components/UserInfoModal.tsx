@@ -34,9 +34,8 @@ export default function UserInfoModal({modal, setModal, user, setSelectedUser, g
             setEmail(user.email);
             setIsStudent(user.isStudent);
             setIsProfessor(user.isProfessor);
-            // setIsAdmin(user.isAdmin);
             setUserId(user.id);
-            const groupName = groups.find(g => g.id === user.groupID.at(0));
+            const groupName = groups.find(g => g.id === (user.groupID[0] as any)?.id);
             setGroupId(groupName?.name);
         }
     }, [user]);
@@ -51,14 +50,15 @@ export default function UserInfoModal({modal, setModal, user, setSelectedUser, g
             email: email,
             is_student: isStudent,
             is_teacher: isProfessor,
-            id_group: selectedGroupId?.id,
+            id_group: [selectedGroupId?.id],
         }
 
         if (selectedGroupId) {
-            body.id_group = selectedGroupId?.id;
+            body.id_group = [selectedGroupId?.id];
         }
         try {
-            await httpService.put(`users/${userId}/`, body);
+            const response = await httpService.put(`users/${userId}/`, body);
+            console.log(response);
             setIsEdited(!isEdit);
             messageApi.open({
                 type: 'success',
