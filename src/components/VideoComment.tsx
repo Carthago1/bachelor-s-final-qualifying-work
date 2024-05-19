@@ -42,7 +42,7 @@ export default function VideoComment({ comment, userId, authorVideoId, onDeleteC
     }
     
     return (
-        <div style={{width: '100%', display: 'flex', gap: '10px', flexDirection: 'column'}}>
+        <div style={{width: '100%', display: 'flex', gap: 10, flexDirection: 'column'}}>
             {contextHolder}
             <div style={{fontSize: '1.5rem', display: 'flex', justifyContent: 'space-between'}}>
                 <div>

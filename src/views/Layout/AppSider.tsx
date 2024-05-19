@@ -42,7 +42,7 @@ export default function AppSider({content, setContent}: IAppSiderProps) {
                 <>
                     <Button 
                         type='primary' 
-                        style={{width: '100%', marginBottom: '1rem'}}
+                        style={{width: '100%', marginBottom: '1rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}
                         onClick={() => setOpen(true)}
                     >
                         Добавить видео

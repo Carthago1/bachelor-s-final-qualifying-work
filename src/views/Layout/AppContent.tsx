@@ -1,5 +1,5 @@
-import React from 'react';
-import { Layout, Row, Col, Empty } from 'antd';
+import React, { useState, Dispatch, SetStateAction } from 'react';
+import { Layout, Row, Col, Empty, Input } from 'antd';
 import VideoCard from '@/components/VideoCard';
 import { Link } from 'react-router-dom';
 import { IContent } from './AppLayout';
@@ -14,11 +14,22 @@ const contentStyle: React.CSSProperties = {
 
 interface IContentProps {
     content: IContent[];
+    search: string;
+    setSearch: Dispatch<SetStateAction<string>>;
 }
 
-export default function AppContent({content}: IContentProps) {
+export default function AppContent({content, search, setSearch}: IContentProps) {
+
     return (
         <Layout.Content style={contentStyle}>
+            {content.length !== 0 && 
+                <Input 
+                    placeholder='Введите название видео'
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                    style={{marginBottom: 10}}
+                />
+            }
             <Row justify={'space-evenly'} gutter={[0, 20]}>
                 {content.length ? content.map((cont, index) => {
                     const key = `col-${index}`;
