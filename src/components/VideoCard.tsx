@@ -36,7 +36,7 @@ export default function VideoCard({ alt, src, title, date }: IVideoCard) {
             {loading && <Spin fullscreen />}
             <Card
                 hoverable
-                style={{width: 240, height: 300}}
+                style={{width: 240, height: 290}}
                 cover={<img alt={alt} src={imgSrc} style={{height: 200, objectFit: 'cover'}} />}
             >
                 <Card.Meta title={title} description={formatedDate} />

@@ -18,6 +18,7 @@ export default function ReactionPanel({ videoId, userId }: IReactionPanelProps) 
     const [likesCount, setLikesCount] = useState(0);
     const [dislikesClicked, setDislikesClicked] = useState(false);
     const [dislikesCount, setDislikesCount] = useState(0);
+    const [reactionId, setReactionId] = useState(0);
 
     useEffect(() => {
         async function fetchLikesData() {
@@ -25,13 +26,15 @@ export default function ReactionPanel({ videoId, userId }: IReactionPanelProps) 
                 const response = await httpService.get<any>(`likes/?id_video=${videoId}`);
                 setLikesCount(response.likes_count);
                 setDislikesCount(response.dislikes_count);
+  
                 (response.data as Array<any>).forEach(el => {
                     if (el.id_user === userId) {
                         if (el.reaction === 'like') {
                             setLikeClicked(true);
                         } else if (el.reaction === 'dislike') {
-                            setDislikesClicked(false);
+                            setDislikesClicked(true);
                         }
+                        setReactionId(el.id);
                     }
                 });
             } catch(error) {
@@ -40,31 +43,69 @@ export default function ReactionPanel({ videoId, userId }: IReactionPanelProps) 
         }
 
         fetchLikesData();
-    }, []);
+    }, [likeClicked, dislikesClicked]);
 
     async function handleLikeClick() {
-        // ЗАПРОС
         if (likeClicked) {
-            setLikesCount(prev => prev - 1);
+            try {
+                await httpService.delete(`likes/${reactionId}/`);
+                setLikesCount(prev => prev - 1);
+            } catch (error) {
+                console.log(error);
+            }
         } else {
-            setLikesCount(prev => prev + 1);
             if (dislikesClicked) {
-                setDislikesClicked(false);
-                setDislikesCount(prev => prev - 1);
+                try {
+                    await httpService.delete(`likes/${reactionId}/`);
+                    setDislikesClicked(false);
+                    setDislikesCount(prev => prev - 1);
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+
+            try {
+                await httpService.post('likes/', {
+                    reaction: 'like',
+                    id_video: videoId,
+                    id_user: userId,
+                });
+                setLikesCount(prev => prev + 1);
+            } catch (error) {
+                console.log(error);
             }
         }
         setLikeClicked(!likeClicked);
     }
 
     async function handleDislikeClick() {
-        // ЗАПРОС
         if (dislikesClicked) {
-            setDislikesCount(prev => prev - 1);
+            try {
+                await httpService.delete(`likes/${reactionId}/`);
+                setDislikesCount(prev => prev - 1);
+            } catch (error) {
+                console.log(error);
+            }
         } else {
-            setDislikesCount(prev => prev + 1);
             if (likeClicked) {
-                setLikeClicked(false);
-                setLikesCount(prev => prev - 1);
+                try {
+                    await httpService.delete(`likes/${reactionId}/`);
+                    setLikeClicked(false);
+                    setLikesCount(prev => prev - 1);
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+
+            try {
+                await httpService.post('likes/', {
+                    reaction: 'dislike',
+                    id_video: videoId,
+                    id_user: userId,
+                });
+                setDislikesCount(prev => prev + 1);
+            } catch (error) {
+                console.log(error);
             }
         }
         setDislikesClicked(!dislikesClicked);
@@ -87,6 +128,5 @@ export default function ReactionPanel({ videoId, userId }: IReactionPanelProps) 
                 <span style={{fontSize: 25}}>{dislikesCount}</span>
             </div>
         </div>
-        
     )
 }

@@ -14,6 +14,7 @@ import type { MenuProps } from 'antd';
 import { AlignLeftOutlined } from '@ant-design/icons';
 import getCommentDeclension from '@/utils/getCommentDeclension';
 import ReactionPanel from '@/components/ReactionPanel';
+import ViewsListModal from '@/components/ViewsListModal';
 
 
 const contentStyle: React.CSSProperties = {
@@ -58,6 +59,13 @@ interface VideoData {
     description: string;
 }
 
+export interface ViewsData {
+    fio: Fio;
+    id: number;
+    id_user: number;
+    id_video: number;
+}
+
 export default function VideoView() {
     const navigate = useNavigate();
     const { videoId } = useParams();
@@ -68,6 +76,8 @@ export default function VideoView() {
     const [loading, setLoading] = useState(true);
     const [order, setOrder] = useState<'increasing' | 'decreasing'>('increasing');
     const [isDescriptionShow, setIsDescriptionShow] = useState(false);
+    const [modal, setModal] = useState(false);
+    const [viewsData, setViewsData] = useState<ViewsData[]>([]);
 
     const items: MenuProps['items'] = [
         {
@@ -102,6 +112,18 @@ export default function VideoView() {
             await httpService.delete(`comment/${commentId}/`);
             setComments(comments.filter(comment => comment.id !== commentId));
         } catch(error) {
+            console.log(error);
+        }
+    }
+
+    async function handleViewsButtonClick(event: React.MouseEvent<HTMLButtonElement>) {
+        event.nativeEvent.stopImmediatePropagation();
+        event.preventDefault();
+        try {
+            const response = await httpService.get<ViewsData[]>(`view/?id_video=${videoId}`);
+            setViewsData(response);
+            setModal(true);
+        } catch (error) {
             console.log(error);
         }
     }
@@ -145,6 +167,9 @@ export default function VideoView() {
             <Layout.Content style={contentStyle}>
                 <div style={containerStyle}>
                     <VideoPlayer videoSource={videoData?.file_link} />
+                    {user?.isProfessor && 
+                        <Button type='default' onClick={handleViewsButtonClick}>Просмотры</Button>
+                    }
                     <ReactionPanel videoId={videoId} userId={user?.id} />
                     <div style={{width: '100%'}}>
                         <p style={{fontWeight: 'bold', fontSize: 20}}>{videoData?.title}</p>
@@ -174,6 +199,7 @@ export default function VideoView() {
                         />
                     ))}
                 </div>
+                <ViewsListModal open={modal} setOpen={setModal} viewsData={viewsData} />
             </Layout.Content>
         </Layout>
     )
