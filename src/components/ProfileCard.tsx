@@ -3,6 +3,7 @@ import { Layout, Card, Button } from 'antd';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import UpdatePassword from './UpdatePassword';
+import CreateRequest from './CreateRequest';
 
 const contentStyle: React.CSSProperties = {
     display: 'flex',
@@ -15,6 +16,7 @@ const contentStyle: React.CSSProperties = {
 export default function ProfileCard() {
     const { user } = useSelector((state: RootState) => state.user);
     const [open, setOpen] = useState(false);
+    const [openRequest, setOpenRequest] = useState(false);
 
     const title = `Профиль ${user?.isAdmin ? 'администратора' : user?.isProfessor ? 'преподавателя' : 'студента'}`
     return (
@@ -25,10 +27,14 @@ export default function ProfileCard() {
                     <p>Фамилия: {user?.surname}</p>
                     <p>Отчество: {user?.patronymic}</p>
                     <p>email: {user?.email}</p>
-                    <Button type="primary" onClick={() => setOpen(true)}>Обновить пароль</Button>
+                    <div style={{display: 'flex', gap: 10}}>
+                        <Button type='primary' onClick={() => setOpen(true)}>Обновить пароль</Button>
+                        <Button type='primary' onClick={() => setOpenRequest(true)}>Поддержка</Button>
+                    </div>
                 </Card>
 
                 <UpdatePassword open={open} setOpen={setOpen} userId={user?.id} />
+                <CreateRequest open={openRequest} setOpen={setOpenRequest} userId={user?.id} />
             </Layout.Content>
         </Layout>
     )
