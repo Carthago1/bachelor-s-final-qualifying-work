@@ -19,7 +19,6 @@ interface IContentProps {
 }
 
 export default function AppContent({content, search, setSearch}: IContentProps) {
-
     return (
         <Layout.Content style={contentStyle}>
             {content.length !== 0 && 

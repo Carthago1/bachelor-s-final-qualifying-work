@@ -166,7 +166,7 @@ export default function VideoView() {
             <AppHeader />
             <Layout.Content style={contentStyle}>
                 <div style={containerStyle}>
-                    <VideoPlayer videoSource={videoData?.file_link} />
+                    <VideoPlayer videoSource={videoData?.file_link} videoId={videoId} userId={user?.id} />
                     {user?.isProfessor && 
                         <Button type='default' onClick={handleViewsButtonClick}>Просмотры</Button>
                     }
