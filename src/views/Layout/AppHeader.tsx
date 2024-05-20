@@ -22,9 +22,9 @@ export default function AppHeader() {
         <Layout.Header style={headerStyle}>
             <span style={{ color: '#fff' }}>
                 <Link to='/' style={{ color: 'inherit', textDecoration: 'none' }}>
-                    <div style={{display: 'flex', gap: 10}}>
+                    <div style={{display: 'flex', gap: 10, whiteSpace: 'nowrap'}}>
                         <VideoCameraOutlined />
-                        На главную
+                        <span style={{overflow: 'hidden'}}>На главную</span>
                     </div>
                 </Link>
             </span>

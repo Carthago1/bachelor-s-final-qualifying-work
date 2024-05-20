@@ -11,9 +11,11 @@ interface IAddVideoProps {
     setOpen: Dispatch<SetStateAction<boolean>>;
     content: IContent[];
     setContent: Dispatch<SetStateAction<IContent[]>>;
+    order: 'increasing' | 'decreasing';
+    setOrder: Dispatch<SetStateAction<'increasing' | 'decreasing'>>;
 }
 
-export default function AddVideo({ open, setOpen, content, setContent }: IAddVideoProps) {
+export default function AddVideo({ open, setOpen, content, setContent, order, setOrder }: IAddVideoProps) {
     const [confirmLoading, setConfirmLoading] = useState(false);
     const discipline = useSelector((state: RootState) => state.discipline);
     const { user } = useSelector((state: RootState) => state.user);
@@ -48,7 +50,11 @@ export default function AddVideo({ open, setOpen, content, setContent }: IAddVid
                 description: response.description,
             }
             if (+selected === discipline.selectedDiscipline) {
-                setContent([video, ...content]);
+                if (order === 'increasing') {
+                    setContent([video, ...content]);
+                } else {
+                    setContent([...content, video]);
+                }
             }
 
         } catch(error) {

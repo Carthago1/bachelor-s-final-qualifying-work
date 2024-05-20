@@ -38,7 +38,7 @@ export default function HeaderRight() {
     ]
     
     return (
-        <div>
+        <div style={{whiteSpace: 'nowrap'}}>
             {user?.isAdmin && 
                 <Button style={{marginRight: 10}} onClick={() => navigate('/admin')}>
                     Панель Администратора

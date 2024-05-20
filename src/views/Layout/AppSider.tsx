@@ -19,9 +19,11 @@ const siderStyle: React.CSSProperties = {
 interface IAppSiderProps {
     content: IContent[];
     setContent: Dispatch<SetStateAction<IContent[]>>;
+    order: 'increasing' | 'decreasing';
+    setOrder: Dispatch<SetStateAction<'increasing' | 'decreasing'>>;
 }
 
-export default function AppSider({content, setContent}: IAppSiderProps) {
+export default function AppSider({content, setContent, order, setOrder}: IAppSiderProps) {
     const disciplines = useSelector((state: RootState) => state.discipline);
     const { user } = useSelector((state: RootState) => state.user);
     const [open, setOpen] = useState(false);
@@ -47,7 +49,14 @@ export default function AppSider({content, setContent}: IAppSiderProps) {
                     >
                         Добавить видео
                     </Button>
-                    <AddVideo open={open} setOpen={setOpen} content={content} setContent={setContent} />
+                    <AddVideo 
+                        open={open} 
+                        setOpen={setOpen} 
+                        content={content} 
+                        setContent={setContent}
+                        order={order}
+                        setOrder={setOrder} 
+                    />
                 </>
             }
             <Menu

@@ -19,6 +19,7 @@ export interface IContent {
 export default function AppLayout() {
     const discipline = useSelector((state: RootState) => state.discipline);
     const [content, setContent] = useState<Array<IContent>>([]);
+    const [order, setOrder] = useState<'increasing' | 'decreasing'>('increasing');
     const [search, setSearch] = useState('');
     const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
 
@@ -74,8 +75,15 @@ export default function AppLayout() {
         <Layout>
             <AppHeader />
             <Layout>
-                <AppSider content={content} setContent={setContent} />
-                <AppContent content={content} search={search} setSearch={setSearch} />
+                <AppSider content={content} setContent={setContent} order={order} setOrder={setOrder} />
+                <AppContent
+                    content={content} 
+                    search={search} 
+                    setSearch={setSearch} 
+                    setContent={setContent}
+                    order={order}
+                    setOrder={setOrder} 
+                />
             </Layout>
         </Layout>
     )
