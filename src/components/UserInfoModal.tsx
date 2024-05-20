@@ -22,7 +22,7 @@ export default function UserInfoModal({modal, setModal, user, setSelectedUser, g
     const [isStudent, setIsStudent] = useState<boolean | undefined>(false);
     const [isProfessor, setIsProfessor] = useState<boolean | undefined>(false);
     // const [isAdmin, setIsAdmin] = useState<boolean | undefined>(false);
-    const [groupId, setGroupId] = useState<string | undefined>('');
+    const [groupsNames, setGroupNames] = useState<string[] | undefined>([]);
     const [userId, setUserId] = useState(0);
     const [messageApi, contextHolder] = message.useMessage();
 
@@ -35,13 +35,13 @@ export default function UserInfoModal({modal, setModal, user, setSelectedUser, g
             setIsStudent(user.isStudent);
             setIsProfessor(user.isProfessor);
             setUserId(user.id);
-            const groupName = groups.find(g => g.id === (user.groupID[0] as any)?.id);
-            setGroupId(groupName?.name);
+            const groupNames = groups.filter(g => (user.groupID as any[]).some(group => group.id === (g as any)?.id)).map(el => el.name);
+            setGroupNames(groupNames);
         }
     }, [user]);
 
     const handleOk = async () => {
-        const selectedGroupId = groups.find(g => g.name === groupId);
+        const selectedGroupIds = groups.filter(g => groupsNames?.includes(g.name)).map(g =>g.id);
         
         const body = {
             first_name: name,
@@ -50,12 +50,9 @@ export default function UserInfoModal({modal, setModal, user, setSelectedUser, g
             email: email,
             is_student: isStudent,
             is_teacher: isProfessor,
-            id_group: [selectedGroupId?.id],
+            id_group: selectedGroupIds,
         }
 
-        if (selectedGroupId) {
-            body.id_group = [selectedGroupId?.id];
-        }
         try {
             const response = await httpService.put(`users/${userId}/`, body);
             console.log(response);
@@ -111,15 +108,33 @@ export default function UserInfoModal({modal, setModal, user, setSelectedUser, g
                         <Input value={email} onChange={(e) => setEmail(e.target.value)} />
                     </Form.Item>
 
-                    <Form.Item label="Группа">
-                        <Select value={groupId} onChange={e => setGroupId(e)} >
-                            {groups.map(group => (
-                                <Select.Option key={group.id} value={group.name}>
-                                    {group.name}
-                                </Select.Option>))
-                            }
-                        </Select>
-                    </Form.Item>
+                    {isStudent && 
+                        <Form.Item label="Группа">
+                            <Select value={groupsNames && groupsNames[0]} onChange={e => setGroupNames([e])} >
+                                {groups.map(group => (
+                                    <Select.Option key={group.id} value={group.name}>
+                                        {group.name}
+                                    </Select.Option>))
+                                }
+                            </Select>
+                        </Form.Item>
+                    }
+                    
+                    {isProfessor && 
+                        <Form.Item label="Группы">
+                            <Select
+                                mode='multiple' 
+                                value={groupsNames && groupsNames}
+                                onChange={e => setGroupNames(e)} 
+                            >
+                                {groups.map(group => (
+                                    <Select.Option key={group.id} value={group.name}>
+                                        {group.name}
+                                    </Select.Option>))
+                                }
+                            </Select>
+                        </Form.Item>
+                    }
 
                     <Form.Item label="Студент">
                         <Checkbox checked={isStudent} onChange={e => setIsStudent(e.target.checked)} />
