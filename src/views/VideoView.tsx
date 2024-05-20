@@ -182,7 +182,7 @@ export default function VideoView() {
             <Layout.Content style={contentStyle}>
                 <div style={containerStyle}>
                     <VideoPlayer videoSource={videoData?.file_link} videoId={videoId} userId={user?.id} />
-                    {(user?.isProfessor || user?.isAdmin) && 
+                    {((user?.isProfessor && user.id === videoData?.id_teacher) || user?.isAdmin) && 
                         <div style={{display: 'flex', gap: 10}}>
                             <Button type='default' onClick={handleViewsButtonClick}>Просмотры</Button>
                             <Button type='primary' danger onClick={handleDeleteButtonClick}>Удалить видео</Button>

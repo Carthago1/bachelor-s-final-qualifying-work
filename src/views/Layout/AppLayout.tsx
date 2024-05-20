@@ -62,7 +62,7 @@ export default function AppLayout() {
             if (discipline.selectedDiscipline) {
                 fetchVideos(search);
             }
-        }, 500);
+        }, 300);
 
         return () => {
             if (timer) {

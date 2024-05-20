@@ -24,25 +24,32 @@ export default function CreateRequest({ open, setOpen, userId }: ICreateRequestP
     }
 
     async function handleOk() {
-        setConfirmLoading(true);
-        try {
-            await httpService.post('requests/', {
-                title,
-                content: requestContent,
-                id_user: userId,
-            });
-            messageApi.open({
-                type: 'success',
-                content: 'Обращение успешно отправлено',
-            });
-        } catch (error) {
+        if (title && requestContent) {
+            setConfirmLoading(true);
+            try {
+                await httpService.post('requests/', {
+                    title,
+                    content: requestContent,
+                    id_user: userId,
+                });
+                messageApi.open({
+                    type: 'success',
+                    content: 'Обращение успешно отправлено',
+                });
+            } catch (error) {
+                messageApi.open({
+                    type: 'error',
+                    content: 'Произошла ошибка, попробуйте позднее'
+                });
+            }
+            setConfirmLoading(false);
+            setOpen(false);
+        } else {
             messageApi.open({
                 type: 'error',
-                content: 'Произошла ошибка, попробуйте позднее'
+                content: 'Введите тему и текст обращения'
             });
         }
-        setConfirmLoading(false);
-        setOpen(false);
     }
 
     return (

@@ -29,12 +29,16 @@ export default function ProfileCard() {
                     <p>email: {user?.email}</p>
                     <div style={{display: 'flex', gap: 10}}>
                         <Button type='primary' onClick={() => setOpen(true)}>Обновить пароль</Button>
-                        <Button type='primary' onClick={() => setOpenRequest(true)}>Поддержка</Button>
+                        {!user?.isAdmin && 
+                            <Button type='primary' onClick={() => setOpenRequest(true)}>Поддержка</Button>
+                        }
                     </div>
                 </Card>
 
                 <UpdatePassword open={open} setOpen={setOpen} userId={user?.id} />
-                <CreateRequest open={openRequest} setOpen={setOpenRequest} userId={user?.id} />
+                {!user?.isAdmin && 
+                    <CreateRequest open={openRequest} setOpen={setOpenRequest} userId={user?.id} />
+                } 
             </Layout.Content>
         </Layout>
     )
