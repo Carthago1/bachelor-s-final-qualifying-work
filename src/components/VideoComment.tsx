@@ -10,9 +10,10 @@ interface IVideoCommentProps {
     userId?: number;
     authorVideoId?: number;
     onDeleteClick: (commentId: number) => void;
+    isAdmin?: boolean;
 }
 
-export default function VideoComment({ comment, userId, authorVideoId, onDeleteClick }: IVideoCommentProps) {
+export default function VideoComment({ comment, userId, authorVideoId, onDeleteClick, isAdmin }: IVideoCommentProps) {
     const [isEdit, setIsEdit] = useState(false);
     const [commentContent, setCommentContent] = useState(comment.content);
     const [editedCommentContent, setEditedCommentContent] = useState(comment.content);
@@ -49,7 +50,7 @@ export default function VideoComment({ comment, userId, authorVideoId, onDeleteC
                     {getInitialsFullName(comment.fio.first_name, comment.fio.last_name, comment.fio.patronymic)}
                     {comment.id_author === authorVideoId && <CheckOutlined style={{marginLeft: 10}} />}
                 </div>
-                {userId === comment.id_author && 
+                {(userId === comment.id_author || isAdmin)  && 
                     <div>
                         <EditOutlined style={{cursor: 'pointer', marginRight: 10}} onClick={handleEditClose} />
                         <DeleteOutlined style={{cursor: 'pointer'}} onClick={() => onDeleteClick(comment.id)} />

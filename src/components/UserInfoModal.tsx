@@ -21,7 +21,7 @@ export default function UserInfoModal({modal, setModal, user, setSelectedUser, g
     const [email, setEmail] = useState('');
     const [isStudent, setIsStudent] = useState<boolean | undefined>(false);
     const [isProfessor, setIsProfessor] = useState<boolean | undefined>(false);
-    // const [isAdmin, setIsAdmin] = useState<boolean | undefined>(false);
+    const [isAdmin, setIsAdmin] = useState<boolean | undefined>(false);
     const [groupsNames, setGroupNames] = useState<string[] | undefined>([]);
     const [userId, setUserId] = useState(0);
     const [messageApi, contextHolder] = message.useMessage();
@@ -34,6 +34,7 @@ export default function UserInfoModal({modal, setModal, user, setSelectedUser, g
             setEmail(user.email);
             setIsStudent(user.isStudent);
             setIsProfessor(user.isProfessor);
+            setIsAdmin(user.isAdmin);
             setUserId(user.id);
             const groupNames = groups.filter(g => (user.groupID as any[]).some(group => group.id === (g as any)?.id)).map(el => el.name);
             setGroupNames(groupNames);
@@ -55,7 +56,6 @@ export default function UserInfoModal({modal, setModal, user, setSelectedUser, g
 
         try {
             const response = await httpService.put(`users/${userId}/`, body);
-            console.log(response);
             setIsEdited(!isEdit);
             messageApi.open({
                 type: 'success',
@@ -108,7 +108,7 @@ export default function UserInfoModal({modal, setModal, user, setSelectedUser, g
                         <Input value={email} onChange={(e) => setEmail(e.target.value)} />
                     </Form.Item>
 
-                    {isStudent && 
+                    {(isStudent && !isProfessor && !isAdmin) && 
                         <Form.Item label="Группа">
                             <Select value={groupsNames && groupsNames[0]} onChange={e => setGroupNames([e])} >
                                 {groups.map(group => (
@@ -120,7 +120,7 @@ export default function UserInfoModal({modal, setModal, user, setSelectedUser, g
                         </Form.Item>
                     }
                     
-                    {isProfessor && 
+                    {(isProfessor || isAdmin) && 
                         <Form.Item label="Группы">
                             <Select
                                 mode='multiple' 

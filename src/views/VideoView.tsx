@@ -194,6 +194,7 @@ export default function VideoView() {
                             key={comment.id} 
                             comment={comment} 
                             userId={user?.id}
+                            isAdmin={user?.isAdmin}
                             authorVideoId={videoData?.id_teacher}
                             onDeleteClick={onDeleteClick}
                         />
