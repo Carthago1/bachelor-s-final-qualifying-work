@@ -15,6 +15,7 @@ import { AlignLeftOutlined } from '@ant-design/icons';
 import getCommentDeclension from '@/utils/getCommentDeclension';
 import ReactionPanel from '@/components/ReactionPanel';
 import ViewsListModal from '@/components/ViewsListModal';
+import ConfirmationModal from '@/components/ConfirmationModal';
 
 
 const contentStyle: React.CSSProperties = {
@@ -78,6 +79,7 @@ export default function VideoView() {
     const [isDescriptionShow, setIsDescriptionShow] = useState(false);
     const [modal, setModal] = useState(false);
     const [viewsData, setViewsData] = useState<ViewsData[]>([]);
+    const [confirmation, setConfirmation] = useState(false);
 
     const items: MenuProps['items'] = [
         {
@@ -107,6 +109,10 @@ export default function VideoView() {
         onClick: handleMenuClick,
     }
 
+    function handleDeleteButtonClick() {
+        setConfirmation(true);
+    }
+
     async function onDeleteClick(commentId: number) {
         try {
             await httpService.delete(`comment/${commentId}/`);
@@ -124,6 +130,15 @@ export default function VideoView() {
             setViewsData(response);
             setModal(true);
         } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async function handleDeleteVideo() {
+        try {
+            await httpService.delete(`video/${videoId}/`);
+            navigate('/');
+        } catch(error) {
             console.log(error);
         }
     }
@@ -167,8 +182,11 @@ export default function VideoView() {
             <Layout.Content style={contentStyle}>
                 <div style={containerStyle}>
                     <VideoPlayer videoSource={videoData?.file_link} videoId={videoId} userId={user?.id} />
-                    {user?.isProfessor && 
-                        <Button type='default' onClick={handleViewsButtonClick}>Просмотры</Button>
+                    {(user?.isProfessor || user?.isAdmin) && 
+                        <div style={{display: 'flex', gap: 10}}>
+                            <Button type='default' onClick={handleViewsButtonClick}>Просмотры</Button>
+                            <Button type='primary' danger onClick={handleDeleteButtonClick}>Удалить видео</Button>
+                        </div>
                     }
                     <ReactionPanel videoId={videoId} userId={user?.id} />
                     <div style={{width: '100%'}}>
@@ -201,6 +219,7 @@ export default function VideoView() {
                     ))}
                 </div>
                 <ViewsListModal open={modal} setOpen={setModal} viewsData={viewsData} />
+                <ConfirmationModal open={confirmation} setOpen={setConfirmation} onSuccess={handleDeleteVideo} />
             </Layout.Content>
         </Layout>
     )
