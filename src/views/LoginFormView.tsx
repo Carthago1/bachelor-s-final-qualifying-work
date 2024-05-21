@@ -8,6 +8,7 @@ import { setDiscipline } from '@/store/discipline/disciplineSlice';
 import { RootState } from '@/store/store';
 import { useNavigate } from 'react-router-dom';
 import { Discipline } from '@/store/discipline/disciplineTypes';
+import isEmailValid from '@/utils/emailValidate';
 
 type FieldType = {
     email?: string;
@@ -28,6 +29,15 @@ const App: React.FC = () => {
     })
 
     async function onFinish(values: FieldType) {
+        if (!isEmailValid(values.email)) {
+            messageApi.open({
+                type: 'error',
+                content: 'Введите корректный email',
+            });
+            
+            return;
+        }
+
         setLoading(true);
         try {
             const body = {
@@ -92,7 +102,7 @@ const App: React.FC = () => {
                 <Form.Item<FieldType>
                     label="Email"
                     name="email"
-                    rules={[{ required: true, message: 'Please input your email!' }]}
+                    rules={[{ required: true, message: 'Введите email' }]}
                 >
                     <Input />
                 </Form.Item>
@@ -100,7 +110,7 @@ const App: React.FC = () => {
                 <Form.Item<FieldType>
                 label="Пароль"
                 name="password"
-                rules={[{ required: true, message: 'Please input your password!' }]}
+                rules={[{ required: true, message: 'Введите пароль' }]}
                 >
                     <Input.Password />
                 </Form.Item>

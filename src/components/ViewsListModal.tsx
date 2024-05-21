@@ -31,16 +31,18 @@ export default function ViewsListModal({ open, setOpen, viewsData }: IViewsListM
                 </Button>
             ]}
         >
-            <List
+            {viewsData.length === 0 ? <p>Видео пока что никто не посмотрел</p> :
+                <List
                 style={{width: '100%'}}
                 size="large"
                 bordered
                 dataSource={viewsData}
                 renderItem={(view) => (
                     <List.Item>
-                        {`${view.fio.last_name} ${view.fio.first_name} ${view.fio.patronymic && view.fio.patronymic}`}
-                    </List.Item>)}
-            />
+                            {`${view.fio.last_name} ${view.fio.first_name} ${view.fio.patronymic && view.fio.patronymic}`}
+                        </List.Item>)}
+                />
+            }
         </Modal>
     )
 }

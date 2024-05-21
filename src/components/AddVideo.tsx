@@ -1,5 +1,5 @@
 import React, { useState, Dispatch, SetStateAction } from 'react';
-import { Modal, Form, Input, Select, Upload } from 'antd';
+import { Modal, Form, Input, Select, Upload, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
@@ -19,18 +19,41 @@ export default function AddVideo({ open, setOpen, content, setContent, order, se
     const [confirmLoading, setConfirmLoading] = useState(false);
     const discipline = useSelector((state: RootState) => state.discipline);
     const { user } = useSelector((state: RootState) => state.user);
+    const [messageApi, contextHolder] = message.useMessage();
     const options = discipline.discipline.map(d => {
         return {
             value: d.id,
             label: d.name,
         }
-    })
+    });
     const [file, setFile] = useState<any>(null);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [selected, setSelected] = useState('');
 
+    function openErrormessage(message: string) {
+        messageApi.open({
+            type: 'error',
+            content: message,
+        });
+    }
+
     async function handleOk() {
+        if (!title) {
+            openErrormessage('Введите название');
+            return
+        }
+
+        if (!selected) {
+            openErrormessage('Выберите дисциплину');
+            return;
+        }
+
+        if (!file) {
+            openErrormessage('Загрузите файл');
+            return;
+        }
+
         setConfirmLoading(true);
         const formData = new FormData();
         formData.append('file_link', file);
@@ -56,6 +79,10 @@ export default function AddVideo({ open, setOpen, content, setContent, order, se
                     setContent([...content, video]);
                 }
             }
+            setTitle('');
+            setDescription('');
+            setSelected('');
+            setFile(null);
 
         } catch(error) {
             console.log(error);
@@ -83,52 +110,55 @@ export default function AddVideo({ open, setOpen, content, setContent, order, se
     }
 
     return (
-        <Modal
-            title='Добавление видео'
-            open={open}
-            onOk={handleOk}
-            confirmLoading={confirmLoading}
-            onCancel={handleCancel}
-            width={600}
-        >
-            <Form
-                labelCol={{ span: 4 }}
-                wrapperCol={{ span: 14 }}
-                layout="horizontal"
-                style={{ maxWidth: 600 }}
+        <>
+        {contextHolder}
+            <Modal
+                title='Добавление видео'
+                open={open}
+                onOk={handleOk}
+                confirmLoading={confirmLoading}
+                onCancel={handleCancel}
+                width={600}
             >
-                <Form.Item label="Название">
-                    <Input value={title} onChange={(e) => setTitle(e.target.value)} />
-                </Form.Item>
-                <Form.Item label="Дисциплина">
-                    <Select value={selected} onChange={(e) => setSelected(e)} >
-                        {options.map(option => (
-                            <Select.Option key={option.value} value={option.value}>
-                                {option.label}
-                            </Select.Option>))
-                        }
-                    </Select>
-                </Form.Item>
+                <Form
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 14 }}
+                    layout="horizontal"
+                    style={{ maxWidth: 600 }}
+                >
+                    <Form.Item label="Название">
+                        <Input value={title} onChange={(e) => setTitle(e.target.value)} />
+                    </Form.Item>
+                    <Form.Item label="Дисциплина">
+                        <Select value={selected} onChange={(e) => setSelected(e)} >
+                            {options.map(option => (
+                                <Select.Option key={option.value} value={option.value}>
+                                    {option.label}
+                                </Select.Option>))
+                            }
+                        </Select>
+                    </Form.Item>
 
-                <Form.Item label="Описание">
-                    <Input.TextArea rows={4} value={description} onChange={(e) => setDescription(e.target.value)} />
-                </Form.Item>
-                
-                <Form.Item label="Видео" valuePropName="fileList" getValueFromEvent={normFile}>
-                    <Upload 
-                        accept='.mp4' 
-                        listType='picture-card'
-                        maxCount={1}
-                        onChange={handleChangeFile}
-                        beforeUpload={() => false}
-                    >
-                        <button style={{ border: 0, background: 'none' }} type="button">
-                            <PlusOutlined />
-                            <div style={{ marginTop: 8 }}>Upload</div>
-                        </button>
-                    </Upload>
-                </Form.Item>
-            </Form>
-        </Modal>
+                    <Form.Item label="Описание">
+                        <Input.TextArea rows={4} value={description} onChange={(e) => setDescription(e.target.value)} />
+                    </Form.Item>
+                    
+                    <Form.Item label="Видео" valuePropName="fileList" getValueFromEvent={normFile}>
+                        <Upload 
+                            accept='.mp4' 
+                            listType='picture-card'
+                            maxCount={1}
+                            onChange={handleChangeFile}
+                            beforeUpload={() => false}
+                        >
+                            <button style={{ border: 0, background: 'none' }} type="button">
+                                <PlusOutlined />
+                                <div style={{ marginTop: 8 }}>Upload</div>
+                            </button>
+                        </Upload>
+                    </Form.Item>
+                </Form>
+            </Modal>
+        </>
     )
 }

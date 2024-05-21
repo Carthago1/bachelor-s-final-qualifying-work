@@ -24,7 +24,7 @@ export default function CreateRequest({ open, setOpen, userId }: ICreateRequestP
     }
 
     async function handleOk() {
-        if (title && requestContent) {
+        if (title.trim() && requestContent.trim()) {
             setConfirmLoading(true);
             try {
                 await httpService.post('requests/', {

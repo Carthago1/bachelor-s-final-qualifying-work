@@ -22,6 +22,24 @@ export default function UpdatePassword({open, setOpen, userId} : IUpdatePassword
     const [messageApi, contextHolder] = message.useMessage();
 
     async function handleOk() {
+        if (!password) {
+            messageApi.open({
+                type: 'error',
+                content: 'Введите текущий пароль',
+            });
+
+            return;
+        }
+
+        if (!newPassword) {
+            messageApi.open({
+                type: 'error',
+                content: 'Введите новый пароль',
+            });
+
+            return;
+        }
+
         if (newPassword !== repeatedNewPassword) {
             messageApi.open({
                 type: 'error',
@@ -46,13 +64,17 @@ export default function UpdatePassword({open, setOpen, userId} : IUpdatePassword
             messageApi.open({
                 type: 'success',
                 content: 'Пароль успешно обновлен',
-            })
+            });
+            setOpen(false);
         } catch (e) {
-            console.log(e);
+            messageApi.open({
+                type: 'error',
+                content: 'Введенный пароль неверный',
+            });
+        } finally {
+            setConfirmLoading(false);
         }
 
-        setOpen(false);
-        setConfirmLoading(false);
     }
 
     function handleCancel() {

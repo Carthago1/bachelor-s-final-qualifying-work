@@ -8,6 +8,7 @@ import { setUser } from '@/store/user/userSlice';
 import { setDiscipline } from '@/store/discipline/disciplineSlice';
 import localStorageService from '@/services/localStorageService';
 import { Discipline } from '@/store/discipline/disciplineTypes';
+import isEmailValid from '@/utils/emailValidate';
 
 type FieldType = {
     name?: string;
@@ -32,6 +33,15 @@ export default function RegistrationView() {
     })
 
     async function onFinish(values: FieldType) {
+        if (!isEmailValid(values.email)) {
+            messageApi.open({
+                type: 'error',
+                content: 'Введите корректный email',
+            });
+            
+            return;
+        }
+
         if (values.password !== values.repeatedPassword) {
             messageApi.open({
                 type: 'error',
@@ -108,17 +118,17 @@ export default function RegistrationView() {
                 autoComplete="off"
             >
                 <Form.Item<FieldType>
-                    label="Имя"
-                    name="name"
-                    rules={[{ required: true, message: 'Please input your name!' }]}
+                    label="Фамилия"
+                    name="surname"
+                    rules={[{ required: true, message: 'Введите фамилию' }]}
                 >
                     <Input />
                 </Form.Item>
-
+                
                 <Form.Item<FieldType>
-                    label="Фамилия"
-                    name="surname"
-                    rules={[{ required: true, message: 'Please input your surname!' }]}
+                    label="Имя"
+                    name="name"
+                    rules={[{ required: true, message: 'Введите имя' }]}
                 >
                     <Input />
                 </Form.Item>
@@ -126,7 +136,7 @@ export default function RegistrationView() {
                 <Form.Item<FieldType>
                     label="Отчество"
                     name="patronomyc"
-                    rules={[{ required: true, message: 'Please input your Patronomyc!' }]}
+                    rules={[{ required: true, message: 'Введите отчество' }]}
                 >
                     <Input />
                 </Form.Item>
@@ -134,7 +144,7 @@ export default function RegistrationView() {
                 <Form.Item<FieldType>
                     label="Email"
                     name="email"
-                    rules={[{ required: true, message: 'Please input your email!' }]}
+                    rules={[{ required: true, message: 'Введите email' }]}
                 >
                     <Input />
                 </Form.Item>
@@ -142,7 +152,7 @@ export default function RegistrationView() {
                 <Form.Item<FieldType>
                     label="Пароль"
                     name="password"
-                    rules={[{ required: true, message: 'Please input your password!' }]}
+                    rules={[{ required: true, message: 'Введите пароль' }]}
                 >
                     <Input.Password />
                 </Form.Item>
@@ -150,7 +160,7 @@ export default function RegistrationView() {
                 <Form.Item<FieldType>
                     label="Повторите пароль"
                     name="repeatedPassword"
-                    rules={[{ required: true, message: 'Please repeat your password!' }]}
+                    rules={[{ required: true, message: 'Введите пароль еще раз' }]}
                 >
                     <Input.Password />
                 </Form.Item>

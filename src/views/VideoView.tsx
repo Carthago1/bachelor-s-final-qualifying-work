@@ -80,6 +80,7 @@ export default function VideoView() {
     const [modal, setModal] = useState(false);
     const [viewsData, setViewsData] = useState<ViewsData[]>([]);
     const [confirmation, setConfirmation] = useState(false);
+    const [authorFio, setAuthorFio] = useState<any>({});
 
     const items: MenuProps['items'] = [
         {
@@ -152,6 +153,8 @@ export default function VideoView() {
             try {
                 const response = await httpService.get<VideoData>(`video/${videoId}/`);
                 setVideoData(response);
+                const responseAuthor = await httpService.get<any>(`users/${response.id_teacher}/`);
+                setAuthorFio(responseAuthor);
             } catch(error) {
                 console.log(error);
             }
@@ -182,6 +185,7 @@ export default function VideoView() {
             <Layout.Content style={contentStyle}>
                 <div style={containerStyle}>
                     <VideoPlayer videoSource={videoData?.file_link} videoId={videoId} userId={user?.id} />
+                    <p>Преподаватель: {`${authorFio?.last_name} ${authorFio?.first_name} ${authorFio?.patronymic}`}</p>
                     {((user?.isProfessor && user.id === videoData?.id_teacher) || user?.isAdmin) && 
                         <div style={{display: 'flex', gap: 10}}>
                             <Button type='default' onClick={handleViewsButtonClick}>Просмотры</Button>
